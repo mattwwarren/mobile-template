@@ -61,6 +61,7 @@ auth_provider:
   default: none
   choices:
     - none
+    - mock
     - ory
     - auth0
     - keycloak
