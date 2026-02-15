@@ -1,0 +1,103 @@
+_min_copier_version: "9.0.0"
+_templates_suffix: ".jinja"
+_envops:
+  keep_trailing_newline: true
+_exclude:
+  - "scripts/templatize.sh"
+  - ".git"
+  - ".git/**"
+  - ".templatized"
+  - ".templatized/**"
+  - "node_modules"
+  - "node_modules/**"
+  - ".expo"
+  - ".expo/**"
+  - "ios"
+  - "ios/**"
+  - "android"
+  - "android/**"
+  - "package-lock.json"
+  - ".github/workflows/publish-template.yml"
+
+project_name:
+  type: str
+  help: "Project name (e.g., 'My Home App')"
+  validator: "{% if not project_name %}Required{% endif %}"
+
+project_slug:
+  type: str
+  help: "Package name (auto-generated, lowercase with hyphens)"
+  default: "{{ project_name | lower | replace(' ', '-') | replace('_', '-') }}"
+
+description:
+  type: str
+  help: "Brief project description"
+  default: "A React Native mobile application"
+
+bundle_id:
+  type: str
+  help: "App bundle identifier (e.g., com.example.myapp)"
+  default: "com.example.{{ project_slug | replace('-', '') }}"
+
+api_url:
+  type: str
+  help: "Backend API URL for development"
+  default: "http://localhost:8000"
+
+auth_enabled:
+  type: bool
+  help: "Enable authentication? (Adds auth provider and protected routes)"
+  default: false
+
+auth_provider:
+  type: str
+  help: |
+    Authentication provider:
+      - none: No authentication (public app)
+      - ory: Ory (open source, self-hosted)
+      - auth0: Auth0 (commercial SaaS)
+      - keycloak: Keycloak (open source)
+      - cognito: AWS Cognito (AWS managed)
+  default: none
+  choices:
+    - none
+    - ory
+    - auth0
+    - keycloak
+    - cognito
+  when: "{{ auth_enabled }}"
+
+use_mocks:
+  type: bool
+  help: "Include mock data for standalone development?"
+  default: true
+
+_tasks:
+  - "python3 _tasks.py"
+
+_message_after: |
+
+  Project {{ project_name }} generated successfully!
+
+  Quick Start:
+    1. Install dependencies:
+       cd {{ _copier_conf.dst_path }}
+       npm install
+    2. Start development:
+       npx expo start
+
+  Configuration Summary:
+    - Bundle ID: {{ bundle_id }}
+    - Authentication: {{ 'Enabled (' + auth_provider + ')' if auth_enabled else 'Disabled' }}
+    - Mock Data: {{ 'Enabled' if use_mocks else 'Disabled' }}
+    - API URL: {{ api_url }}
+
+  Available Scripts:
+    - npx expo start      # Start Expo dev server
+    - npm test             # Run tests
+    - npm run lint         # Biome check
+    - npm run typecheck    # TypeScript check
+
+  Next Steps:
+    - Run npm run generate:types to sync with backend API
+    - Open in Expo Go on your device or run in simulator

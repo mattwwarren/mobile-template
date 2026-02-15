@@ -1,0 +1,16 @@
+node_modules/
+.expo/
+dist/
+ios/
+android/
+*.tsbuildinfo
+coverage/
+.templatized/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+.env.local

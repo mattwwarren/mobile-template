@@ -1,0 +1,43 @@
+name: Validate Template
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_call:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        config:
+          - name: default
+            args: '--data project_name="Test App" --data project_slug=test-app --data bundle_id=com.example.testapp'
+          - name: auth-enabled
+            args: '--data project_name="Auth App" --data project_slug=auth-app --data bundle_id=com.example.authapp --data auth_enabled=true --data auth_provider=mock'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install copier
+      - name: Generate project (${{ matrix.config.name }})
+        run: |
+          copier copy . /tmp/test-project --trust --defaults ${{ matrix.config.args }}
+      - name: Install dependencies
+        working-directory: /tmp/test-project
+        run: npm install
+      - name: Lint
+        working-directory: /tmp/test-project
+        run: npx biome check .
+      - name: Typecheck
+        working-directory: /tmp/test-project
+        run: npx tsc --noEmit
+      - name: Test
+        working-directory: /tmp/test-project
+        run: npm test

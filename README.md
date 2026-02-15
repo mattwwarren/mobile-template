@@ -1,0 +1,194 @@
+# Mobile Template
+
+A production-ready React Native mobile template for consuming FastAPI backends. Built with Expo, TypeScript, TanStack Query, and Expo Router.
+
+## Overview
+
+This template provides a complete mobile application scaffold with:
+- File-based navigation (Expo Router)
+- Type-safe API client with Bearer token authentication
+- TanStack Query for server state management
+- Auto-generated types from OpenAPI spec
+- Pluggable authentication (mock, Ory, Auth0, Keycloak, Cognito)
+- Seeded mock data factories for standalone development
+- Biome linting and TypeScript strict mode
+
+## Prerequisites
+
+- **Node.js** >= 18
+- **npm** >= 9
+- **Expo Go** app on your phone (for physical device testing), OR
+- **iOS Simulator** (macOS only, requires Xcode), OR
+- **Android Emulator** (requires Android Studio)
+
+## Getting Started
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Configure environment:**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your settings
+   ```
+
+3. **Start the development server:**
+   ```bash
+   npx expo start
+   ```
+
+4. **Open the app:**
+   - Scan the QR code with Expo Go (physical device)
+   - Press `i` for iOS simulator
+   - Press `a` for Android emulator
+
+## Project Structure
+
+```
+app/                        # Expo Router file-based routes
+├── _layout.tsx             # Root layout (providers, auth redirect)
+├── index.tsx               # Entry redirect
+├── (auth)/                 # Unauthenticated routes
+│   ├── _layout.tsx
+│   └── login.tsx
+├── (tabs)/                 # Main tab navigation
+│   ├── _layout.tsx         # Tab bar configuration
+│   ├── index.tsx           # Dashboard
+│   ├── items.tsx           # Items list
+│   └── settings.tsx        # Settings
+└── items/                  # Item routes
+    ├── [id].tsx            # Item detail
+    └── create.tsx          # Create item
+src/
+├── api/                    # API layer
+│   ├── generated/types.ts  # Auto-generated from OpenAPI
+│   ├── client.ts           # Fetch wrapper with auth
+│   ├── items.ts            # Item CRUD functions
+│   └── types.ts            # Type aliases
+├── auth/                   # Auth provider abstraction
+├── components/ui/          # Shared UI components
+├── hooks/                  # TanStack Query hooks
+├── lib/theme.ts            # Design tokens (colors, spacing, etc.)
+└── mocks/                  # Faker.js data factories
+```
+
+## Development
+
+### Running the App
+
+```bash
+npx expo start             # Start dev server (QR code)
+npx expo start --ios       # Open in iOS simulator
+npx expo start --android   # Open in Android emulator
+```
+
+Hot reload is enabled by default. Save a file and changes appear instantly.
+
+### Debugging
+
+- Shake device or press `m` in terminal to open dev menu
+- Use React DevTools for component inspection
+- Console logs appear in the terminal running Expo
+
+## API Integration
+
+### Connecting to Backend
+
+Set the API URL in `.env`:
+```bash
+EXPO_PUBLIC_API_URL=http://localhost:8000
+EXPO_PUBLIC_USE_MOCKS=false
+```
+
+The `fetchApi` wrapper in `src/api/client.ts` handles:
+- Bearer token authentication via `expo-secure-store`
+- Base URL configuration
+- Error handling
+
+### Type Generation
+
+Generate TypeScript types from the backend OpenAPI spec:
+
+```bash
+npm run generate:types
+```
+
+This reads from `../specs/openapi.json` (exported by the FastAPI backend) and generates types in `src/api/generated/types.ts`.
+
+## Authentication
+
+Authentication uses a pluggable provider pattern:
+
+| Provider | Use Case |
+|----------|----------|
+| `mock` | Development (auto-logged-in) |
+| `ory` | Ory (open source, self-hosted) |
+| `auth0` | Auth0 (commercial SaaS) |
+| `keycloak` | Keycloak (open source) |
+| `cognito` | AWS Cognito |
+
+Configure via `EXPO_PUBLIC_AUTH_PROVIDER` in `.env`.
+
+Tokens are stored securely using `expo-secure-store` (device keychain/keystore).
+
+## Testing
+
+```bash
+npm test                   # Run all tests
+```
+
+Tests use Jest with the `expo-jest` preset. Mock data is generated with Faker.js using `seed(12345)` for reproducibility.
+
+**Note:** MSW is not used in this template because React Native does not support service workers. Instead, mock at the API client level.
+
+## Linting & Type Checking
+
+```bash
+npm run lint               # Biome lint check
+npm run lint:fix           # Auto-fix lint issues
+npm run typecheck          # TypeScript strict check
+```
+
+Zero violations policy: all checks must pass with zero errors.
+
+## Template Generation
+
+This template uses [Copier](https://copier.readthedocs.io/) for project generation:
+
+```bash
+copier copy ./mobile-template ./my-mobile-app
+```
+
+Template variables:
+- `project_name` - Human-readable name
+- `project_slug` - Package name (hyphens)
+- `bundle_id` - App store identifier
+- `auth_enabled` / `auth_provider` - Authentication setup
+- `use_mocks` - Include mock data
+
+## Customization
+
+### Adding a Screen
+
+1. Create a new file in `app/` (file-based routing):
+   ```
+   app/(tabs)/profile.tsx      # New tab
+   app/items/edit/[id].tsx      # New nested route
+   ```
+2. Add tab entry in `app/(tabs)/_layout.tsx` if adding a tab
+
+### Modifying the Theme
+
+Edit `src/lib/theme.ts` to change colors, spacing, font sizes, and border radii. All components reference these constants.
+
+### Adding a Provider
+
+1. Create provider in `src/auth/providers/`
+2. Register in auth context
+3. Set `EXPO_PUBLIC_AUTH_PROVIDER` in `.env`
+
+## License
+
+This is free and unencumbered software released into the public domain. See [UNLICENSE](../UNLICENSE) for details.

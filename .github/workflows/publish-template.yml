@@ -1,0 +1,40 @@
+name: Publish Template
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    uses: ./.github/workflows/validate-template.yml
+
+  publish:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Templatize
+        run: bash scripts/templatize.sh
+      - name: Push to copier branch
+        run: |
+          cd .templatized
+          git init
+          git checkout -b copier
+          git add .
+          git commit -m "chore: update template from ${{ github.sha }}"
+          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git push -f origin copier
+      - name: Tag copier branch
+        if: github.event_name == 'release'
+        run: |
+          cd .templatized
+          git tag ${{ github.event.release.tag_name }}
+          git push origin ${{ github.event.release.tag_name }}
