@@ -3,6 +3,7 @@ import { Stack } from 'expo-router'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 import { AuthProvider } from '@/auth'
+import { SocketProvider } from '@/realtime'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,7 +21,9 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <Stack screenOptions={{ headerShown: false }} />
+          <SocketProvider>
+            <Stack screenOptions={{ headerShown: false }} />
+          </SocketProvider>
         </AuthProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
