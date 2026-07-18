@@ -50,7 +50,7 @@ describe('useItems', () => {
     mockedItemsApi.list.mockResolvedValue(mockData)
 
     const { wrapper } = createWrapper()
-    const { result } = renderHook(() => useItems({ page: 1, size: 10 }), { wrapper })
+    const { result } = await renderHook(() => useItems({ page: 1, size: 10 }), { wrapper })
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
@@ -58,11 +58,11 @@ describe('useItems', () => {
     expect(mockedItemsApi.list).toHaveBeenCalledWith({ page: 1, size: 10 })
   })
 
-  it('starts in loading state', () => {
+  it('starts in loading state', async () => {
     mockedItemsApi.list.mockReturnValue(new Promise(() => {}))
 
     const { wrapper } = createWrapper()
-    const { result } = renderHook(() => useItems(), { wrapper })
+    const { result } = await renderHook(() => useItems(), { wrapper })
 
     expect(result.current.isLoading).toBe(true)
     expect(result.current.data).toBeUndefined()
@@ -77,7 +77,7 @@ describe('useCreateItem', () => {
     const { wrapper, queryClient } = createWrapper()
     const invalidateSpy = jest.spyOn(queryClient, 'invalidateQueries')
 
-    const { result } = renderHook(() => useCreateItem(), { wrapper })
+    const { result } = await renderHook(() => useCreateItem(), { wrapper })
 
     result.current.mutate({ title: 'New Item', description: 'A test item' })
 

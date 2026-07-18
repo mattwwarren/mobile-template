@@ -126,9 +126,9 @@ beforeEach(() => {
 // ---------------------------------------------------------------------------
 
 describe('SocketProvider', () => {
-  it('renders children', () => {
+  it('renders children', async () => {
     const queryClient = createTestQueryClient()
-    render(
+    await render(
       <QueryClientProvider client={queryClient}>
         <SocketProvider>
           <Text testID="child">Hello</Text>
@@ -143,7 +143,7 @@ describe('SocketProvider', () => {
     const { io } = jest.requireMock('socket.io-client') as { io: jest.Mock }
     const queryClient = createTestQueryClient()
 
-    render(
+    await render(
       <QueryClientProvider client={queryClient}>
         <SocketProvider>
           <Text>test</Text>
@@ -175,7 +175,7 @@ describe('SocketProvider', () => {
     })
 
     const queryClient = createTestQueryClient()
-    render(
+    await render(
       <QueryClientProvider client={queryClient}>
         <SocketProvider>
           <Text>test</Text>
@@ -193,7 +193,7 @@ describe('SocketProvider', () => {
 
   it('subscribes to AppState changes when authenticated', async () => {
     const queryClient = createTestQueryClient()
-    render(
+    await render(
       <QueryClientProvider client={queryClient}>
         <SocketProvider>
           <Text>test</Text>
@@ -208,7 +208,7 @@ describe('SocketProvider', () => {
 
   it('disconnects socket on unmount', async () => {
     const queryClient = createTestQueryClient()
-    const { unmount } = render(
+    const { unmount } = await render(
       <QueryClientProvider client={queryClient}>
         <SocketProvider>
           <Text>test</Text>
@@ -221,14 +221,14 @@ describe('SocketProvider', () => {
       await new Promise((r) => setTimeout(r, 20))
     })
 
-    unmount()
+    await unmount()
 
     expect(mockSocket.disconnect).toHaveBeenCalled()
   })
 
   it('removes AppState subscription on unmount', async () => {
     const queryClient = createTestQueryClient()
-    const { unmount } = render(
+    const { unmount } = await render(
       <QueryClientProvider client={queryClient}>
         <SocketProvider>
           <Text>test</Text>
@@ -240,14 +240,14 @@ describe('SocketProvider', () => {
       await new Promise((r) => setTimeout(r, 20))
     })
 
-    unmount()
+    await unmount()
 
     expect(mockRemove).toHaveBeenCalled()
   })
 
   it('disconnects socket when AppState goes to background', async () => {
     const queryClient = createTestQueryClient()
-    render(
+    await render(
       <QueryClientProvider client={queryClient}>
         <SocketProvider>
           <Text>test</Text>
@@ -266,7 +266,7 @@ describe('SocketProvider', () => {
       | undefined
     expect(appStateHandler).toBeDefined()
 
-    act(() => {
+    await act(() => {
       appStateHandler?.('background')
     })
 
@@ -275,7 +275,7 @@ describe('SocketProvider', () => {
 
   it('reconnects socket when AppState returns to active', async () => {
     const queryClient = createTestQueryClient()
-    render(
+    await render(
       <QueryClientProvider client={queryClient}>
         <SocketProvider>
           <Text>test</Text>
@@ -295,7 +295,7 @@ describe('SocketProvider', () => {
 
     // Socket is not connected
     mockSocket.connected = false
-    act(() => {
+    await act(() => {
       appStateHandler?.('active')
     })
 
@@ -308,15 +308,15 @@ describe('SocketProvider', () => {
 // ---------------------------------------------------------------------------
 
 describe('useSocket', () => {
-  it('returns null when rendered outside SocketProvider', () => {
+  it('returns null when rendered outside SocketProvider', async () => {
     // SocketContext defaults to null
-    const { result } = renderHook(() => useSocket())
+    const { result } = await renderHook(() => useSocket())
     expect(result.current).toBeNull()
   })
 
   it('returns the socket from SocketProvider', async () => {
     const { wrapper } = createWrapper()
-    const { result } = renderHook(() => useSocket(), { wrapper })
+    const { result } = await renderHook(() => useSocket(), { wrapper })
 
     // After async connect, socket should be set
     await waitFor(() => {
@@ -330,9 +330,9 @@ describe('useSocket', () => {
 // ---------------------------------------------------------------------------
 
 describe('useTaskEvents', () => {
-  it('returns initial state when no socket', () => {
+  it('returns initial state when no socket', async () => {
     const { wrapper } = createQueryOnlyWrapper()
-    const { result } = renderHook(() => useTaskEvents(), { wrapper })
+    const { result } = await renderHook(() => useTaskEvents(), { wrapper })
 
     expect(result.current.lastEvent).toBeNull()
     expect(result.current.isConnected).toBe(false)
@@ -340,7 +340,7 @@ describe('useTaskEvents', () => {
 
   it('subscribes to all task event channels', async () => {
     const { wrapper } = createWrapper()
-    renderHook(() => useTaskEvents(), { wrapper })
+    await renderHook(() => useTaskEvents(), { wrapper })
 
     // Wait for socket to be set in provider
     await waitFor(() => {
@@ -356,13 +356,13 @@ describe('useTaskEvents', () => {
 
   it('sets isConnected to true when socket fires connect event', async () => {
     const { wrapper } = createWrapper()
-    const { result } = renderHook(() => useTaskEvents(), { wrapper })
+    const { result } = await renderHook(() => useTaskEvents(), { wrapper })
 
     await waitFor(() => {
       expect(mockSocket.on).toHaveBeenCalledWith('connect', expect.any(Function))
     })
 
-    act(() => {
+    await act(() => {
       emitMock('connect')
     })
 
@@ -371,19 +371,19 @@ describe('useTaskEvents', () => {
 
   it('sets isConnected to false when socket fires disconnect event', async () => {
     const { wrapper } = createWrapper()
-    const { result } = renderHook(() => useTaskEvents(), { wrapper })
+    const { result } = await renderHook(() => useTaskEvents(), { wrapper })
 
     await waitFor(() => {
       expect(mockSocket.on).toHaveBeenCalledWith('connect', expect.any(Function))
     })
 
     // First connect, then disconnect
-    act(() => {
+    await act(() => {
       emitMock('connect')
     })
     expect(result.current.isConnected).toBe(true)
 
-    act(() => {
+    await act(() => {
       emitMock('disconnect')
     })
     expect(result.current.isConnected).toBe(false)
@@ -391,7 +391,7 @@ describe('useTaskEvents', () => {
 
   it('updates lastEvent on task_status_changed', async () => {
     const { wrapper } = createWrapper()
-    const { result } = renderHook(() => useTaskEvents(), { wrapper })
+    const { result } = await renderHook(() => useTaskEvents(), { wrapper })
 
     await waitFor(() => {
       expect(mockSocket.on).toHaveBeenCalledWith('task_status_changed', expect.any(Function))
@@ -408,7 +408,7 @@ describe('useTaskEvents', () => {
       tenant_id: 'tenant-1',
     }
 
-    act(() => {
+    await act(() => {
       emitMock('task_status_changed', event)
     })
 
@@ -418,7 +418,7 @@ describe('useTaskEvents', () => {
   it('calls onStatusChange callback', async () => {
     const onStatusChange = jest.fn()
     const { wrapper } = createWrapper()
-    renderHook(() => useTaskEvents({ onStatusChange }), { wrapper })
+    await renderHook(() => useTaskEvents({ onStatusChange }), { wrapper })
 
     await waitFor(() => {
       expect(mockSocket.on).toHaveBeenCalledWith('task_status_changed', expect.any(Function))
@@ -435,7 +435,7 @@ describe('useTaskEvents', () => {
       tenant_id: 'tenant-1',
     }
 
-    act(() => {
+    await act(() => {
       emitMock('task_status_changed', event)
     })
 
@@ -445,7 +445,7 @@ describe('useTaskEvents', () => {
   it('updates lastEvent on task_progress', async () => {
     const onProgress = jest.fn()
     const { wrapper } = createWrapper()
-    const { result } = renderHook(() => useTaskEvents({ onProgress }), { wrapper })
+    const { result } = await renderHook(() => useTaskEvents({ onProgress }), { wrapper })
 
     await waitFor(() => {
       expect(mockSocket.on).toHaveBeenCalledWith('task_progress', expect.any(Function))
@@ -458,7 +458,7 @@ describe('useTaskEvents', () => {
       status_message: 'Step 3 of 10',
     }
 
-    act(() => {
+    await act(() => {
       emitMock('task_progress', event)
     })
 
@@ -470,7 +470,7 @@ describe('useTaskEvents', () => {
     const onCompleted = jest.fn()
     const { wrapper, queryClient } = createWrapper()
     const invalidateSpy = jest.spyOn(queryClient, 'invalidateQueries')
-    const { result } = renderHook(() => useTaskEvents({ onCompleted }), { wrapper })
+    const { result } = await renderHook(() => useTaskEvents({ onCompleted }), { wrapper })
 
     await waitFor(() => {
       expect(mockSocket.on).toHaveBeenCalledWith('task_completed', expect.any(Function))
@@ -483,7 +483,7 @@ describe('useTaskEvents', () => {
       tenant_id: 'tenant-1',
     }
 
-    act(() => {
+    await act(() => {
       emitMock('task_completed', event)
     })
 
@@ -496,7 +496,7 @@ describe('useTaskEvents', () => {
     const onFailed = jest.fn()
     const { wrapper, queryClient } = createWrapper()
     const invalidateSpy = jest.spyOn(queryClient, 'invalidateQueries')
-    const { result } = renderHook(() => useTaskEvents({ onFailed }), { wrapper })
+    const { result } = await renderHook(() => useTaskEvents({ onFailed }), { wrapper })
 
     await waitFor(() => {
       expect(mockSocket.on).toHaveBeenCalledWith('task_failed', expect.any(Function))
@@ -509,7 +509,7 @@ describe('useTaskEvents', () => {
       tenant_id: 'tenant-1',
     }
 
-    act(() => {
+    await act(() => {
       emitMock('task_failed', event)
     })
 
@@ -521,7 +521,7 @@ describe('useTaskEvents', () => {
   it('filters events by taskId when provided', async () => {
     const onStatusChange = jest.fn()
     const { wrapper } = createWrapper()
-    renderHook(() => useTaskEvents({ taskId: 'task-1', onStatusChange }), { wrapper })
+    await renderHook(() => useTaskEvents({ taskId: 'task-1', onStatusChange }), { wrapper })
 
     await waitFor(() => {
       expect(mockSocket.on).toHaveBeenCalledWith('task_status_changed', expect.any(Function))
@@ -549,14 +549,14 @@ describe('useTaskEvents', () => {
       tenant_id: 'tenant-1',
     }
 
-    act(() => {
+    await act(() => {
       emitMock('task_status_changed', otherEvent)
     })
 
     // Should NOT be called for non-matching task
     expect(onStatusChange).not.toHaveBeenCalled()
 
-    act(() => {
+    await act(() => {
       emitMock('task_status_changed', matchingEvent)
     })
 
@@ -567,7 +567,7 @@ describe('useTaskEvents', () => {
   it('does not filter when no taskId is specified', async () => {
     const onStatusChange = jest.fn()
     const { wrapper } = createWrapper()
-    renderHook(() => useTaskEvents({ onStatusChange }), { wrapper })
+    await renderHook(() => useTaskEvents({ onStatusChange }), { wrapper })
 
     await waitFor(() => {
       expect(mockSocket.on).toHaveBeenCalledWith('task_status_changed', expect.any(Function))
@@ -584,7 +584,7 @@ describe('useTaskEvents', () => {
       tenant_id: 'tenant-1',
     }
 
-    act(() => {
+    await act(() => {
       emitMock('task_status_changed', event)
     })
 
@@ -593,13 +593,13 @@ describe('useTaskEvents', () => {
 
   it('unsubscribes from events on unmount', async () => {
     const { wrapper } = createWrapper()
-    const { unmount } = renderHook(() => useTaskEvents(), { wrapper })
+    const { unmount } = await renderHook(() => useTaskEvents(), { wrapper })
 
     await waitFor(() => {
       expect(mockSocket.on).toHaveBeenCalledWith('task_status_changed', expect.any(Function))
     })
 
-    unmount()
+    await unmount()
 
     expect(mockSocket.off).toHaveBeenCalledWith('connect', expect.any(Function))
     expect(mockSocket.off).toHaveBeenCalledWith('disconnect', expect.any(Function))
@@ -612,7 +612,7 @@ describe('useTaskEvents', () => {
   it('reflects socket.connected as initial isConnected state', async () => {
     mockSocket.connected = true
     const { wrapper } = createWrapper()
-    const { result } = renderHook(() => useTaskEvents(), { wrapper })
+    const { result } = await renderHook(() => useTaskEvents(), { wrapper })
 
     await waitFor(() => {
       expect(result.current.isConnected).toBe(true)
