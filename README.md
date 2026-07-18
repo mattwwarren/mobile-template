@@ -15,7 +15,7 @@ This template provides a complete mobile application scaffold with:
 
 ## Prerequisites
 
-- **Node.js** >= 18
+- **Node.js** >= 20.19.4 (required by React Native 0.86; Node 20.19.4+, 22.13+, or 24.3+)
 - **npm** >= 9
 - **Expo Go** app on your phone (for physical device testing), OR
 - **iOS Simulator** (macOS only, requires Xcode), OR

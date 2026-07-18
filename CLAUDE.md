@@ -6,13 +6,13 @@ React Native mobile template for consuming FastAPI backends. Reference implement
 
 | Layer | Technology | Version |
 |-------|------------|---------|
-| Framework | Expo | ~52.0 |
-| UI | React Native | 0.76.x |
-| Language | TypeScript | ~5.3 (strict) |
-| Navigation | Expo Router | ~4.0 |
+| Framework | Expo | ~57.0 |
+| UI | React Native | 0.86.x |
+| Language | TypeScript | ~5.9 (strict) |
+| Navigation | Expo Router | ~57.0 |
 | Server State | TanStack Query | 5.x |
 | Validation | Zod | 4.x |
-| Token Storage | expo-secure-store | 15.x |
+| Token Storage | expo-secure-store | 57.x |
 | Types | Auto-generated from OpenAPI via `openapi-typescript` | 7.x |
 | Linting | Biome | 2.x |
 | Testing | Jest (expo-jest preset) | - |
