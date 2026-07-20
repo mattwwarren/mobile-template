@@ -6,8 +6,9 @@ is a trimmed, native sibling of that template, consuming the same
 fastapi-template backend, and this doc focuses on where mobile follows the
 web conventions and where it deliberately diverges.
 
-Stack (as shipped in `package.json`): Expo SDK 57 + React Native 0.86 +
-React 19, Expo Router (file-based routing, entry `expo-router/entry`),
+Stack (version authority is `package.json` — at time of writing Expo SDK
+57, React Native 0.86, React 19): Expo Router (file-based routing, entry
+`expo-router/entry`),
 TanStack Query 5, react-hook-form + zod, `expo-secure-store` for tokens,
 socket.io-client, plain `StyleSheet.create()` styling with design tokens
 from `src/lib/theme.ts`, Biome for lint/format, Jest (`jest-expo`) +
