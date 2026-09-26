@@ -106,6 +106,8 @@ if [[ -f "${OUTPUT_DIR}/app.json" ]]; then
     sed -i "s/\"Mobile Template\"/\"${SED_NAME}\"/g" "${OUTPUT_DIR}/app.json"
     sed -i "s/\"slug\": \"mobile-template\"/\"slug\": \"${SED_SLUG}\"/g" "${OUTPUT_DIR}/app.json"
     sed -i "s/\"scheme\": \"mobile-template\"/\"scheme\": \"${SED_SLUG}\"/g" "${OUTPUT_DIR}/app.json"
+    sed -i "s/\"bundleIdentifier\": \"com.example.mobiletemplate\"/\"bundleIdentifier\": \"${SED_BUNDLE_ID}\"/g" "${OUTPUT_DIR}/app.json"
+    sed -i "s/\"package\": \"com.example.mobiletemplate\"/\"package\": \"${SED_BUNDLE_ID}\"/g" "${OUTPUT_DIR}/app.json"
     mv "${OUTPUT_DIR}/app.json" "${OUTPUT_DIR}/app.json.jinja"
     echo "  Templated: app.json -> app.json.jinja"
 fi
