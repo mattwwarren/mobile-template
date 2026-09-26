@@ -7,4 +7,12 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/*.d.ts', '!src/api/generated/**'],
+  coverageThreshold: {
+    global: {
+      statements: 51,
+      branches: 48,
+      functions: 44,
+      lines: 52,
+    },
+  },
 }
