@@ -124,12 +124,17 @@ Authentication uses a pluggable provider pattern:
 | Provider | Use Case |
 |----------|----------|
 | `mock` | Development (auto-logged-in) |
-| `ory` | Ory (open source, self-hosted) |
-| `auth0` | Auth0 (commercial SaaS) |
-| `keycloak` | Keycloak (open source) |
-| `cognito` | AWS Cognito |
+| `ory` | Ory (open source, self-hosted) — planned |
+| `auth0` | Auth0 (commercial SaaS) — planned |
+| `keycloak` | Keycloak (open source) — planned |
+| `cognito` | AWS Cognito — planned |
 
 Configure via `EXPO_PUBLIC_AUTH_PROVIDER` in `.env`.
+
+> **Note:** only `mock` is currently implemented. The other providers are
+> declared choices whose factories don't exist yet — selecting them falls
+> back to mock (see `src/auth/providers/index.ts` and ARCHITECTURE.md's
+> Known gaps).
 
 Tokens are stored securely using `expo-secure-store` (device keychain/keystore).
 
@@ -139,7 +144,7 @@ Tokens are stored securely using `expo-secure-store` (device keychain/keystore).
 npm test                   # Run all tests
 ```
 
-Tests use Jest with the `expo-jest` preset. Mock data is generated with Faker.js using `seed(12345)` for reproducibility.
+Tests use Jest with the `jest-expo` preset. Mock data is generated with Faker.js using `seed(12345)` for reproducibility.
 
 **Note:** MSW is not used in this template because React Native does not support service workers. Instead, mock at the API client level.
 

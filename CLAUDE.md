@@ -15,7 +15,7 @@ React Native mobile template for consuming FastAPI backends. Reference implement
 | Token Storage | expo-secure-store | 57.x |
 | Types | Auto-generated from OpenAPI via `openapi-typescript` | 7.x |
 | Linting | Biome | 2.x |
-| Testing | Jest (expo-jest preset) | - |
+| Testing | Jest (jest-expo preset) | - |
 
 ## Quick Commands
 
@@ -129,8 +129,10 @@ import type { Item, ItemCreate, PaginatedResponse, DashboardStats } from '@/api/
 
 ### Pluggable Provider
 Auth uses a provider abstraction pattern:
-- **mock** - Auto-logged-in for development
-- **ory** / **auth0** / **keycloak** / **cognito** - Production providers
+- **mock** - Auto-logged-in for development (the only implemented provider)
+- **ory** / **auth0** / **keycloak** / **cognito** - planned production
+  providers; currently unimplemented, selection falls back to mock (see
+  ARCHITECTURE.md Known gaps)
 
 ### Token Storage
 - Tokens stored via `expo-secure-store` (device keychain/keystore)
@@ -144,7 +146,7 @@ Root `_layout.tsx` redirects unauthenticated users to `/(auth)/login`
 - **No MSW** -- React Native does not support service workers
 - Mock at API client level (jest.mock for `src/api/client.ts`)
 - Faker.js factories with `seed(12345)` for reproducible test data
-- Jest with `expo-jest` preset
+- Jest with `jest-expo` preset
 - Test components with `@testing-library/react-native`
 
 ## Performance Patterns
