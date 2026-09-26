@@ -22,8 +22,8 @@ function getOryConfig(): { sdkUrl: string } {
 function createOryClient(): FrontendApi | null {
   let sdk: typeof import('@ory/client-fetch')
   try {
-    // Metro treats a require() placed directly in a try block as optional, so a missing SDK
-    // throws here instead of failing the bundle. import() is avoided: Jest cannot execute it.
+    // @ory/client-fetch is a declared dependency and is resolved by Metro at bundle time.
+    // Keep the runtime guard so an invalid installation becomes an auth error, not a crash.
     sdk = require('@ory/client-fetch')
   } catch (err) {
     console.error(SDK_MISSING_MESSAGE, err)

@@ -1,0 +1,76 @@
+{
+  "schema_version": 9,
+  "session_id": "29ce872d",
+  "session_name": "mobile-template/auto-dev/4",
+  "client": "mobile-template",
+  "lane": "default",
+  "purpose": "impl",
+  "ticket_id": "4",
+  "headless": false,
+  "worktree_path": "/home/matthew/.cw/wt/2ac15ad7/dev-4",
+  "workspace_path": "/home/matthew/workspace/templates/mobile-template",
+  "agent_spawn_stamp": {
+    "unresolved_count": 0,
+    "last_stamped_at": null
+  },
+  "attempt": 4,
+  "wall_clock_budget_seconds": null,
+  "stage_started_at": "2026-09-26T08:06:18.884355+00:00",
+  "expected_sentinel_schema_ref": {
+    "command": "cw schema show auto-dev-result --format=tldr",
+    "model": "AutoDevResult",
+    "version": 8
+  },
+  "queue_metadata": {
+    "scope_hint": null,
+    "plan_source": "generated",
+    "headless_timeout_override": null,
+    "regressed_into_stage": null,
+    "pending_operator_comment": false,
+    "plan_approved_at": "2026-09-26T06:38:22.337451+00:00",
+    "plan_approved_fingerprint": "dc6664af55aa73e6ea79cdd58de1a552b8d7a46f50573c3e93f538ae0032f817",
+    "scope_drift_approved_extra_files": null,
+    "scope_drift_approved_head": null
+  },
+  "world_state_snapshot": {
+    "origin_main_sha_at_spawn": "e06843f78b0c4d4a0a6aecf7c6a6d11ad5155b08",
+    "origin_main_branch": "main",
+    "prior_attempts_summary": [
+      {
+        "status": "plan_pending_approval",
+        "stage_reached": "stage1_plan",
+        "blocker_reason": null,
+        "blocker_details": "",
+        "friction_highlights": [
+          "consolidated park: 0 ambiguities, 0 premises, 3 advisory findings, scope large",
+          "soundness risk codified: hard-fail-shared-path \u2014 see wiki/local/inbox/lesson-soundness-codify-hard-fail-shared-path-2026-09-26.md"
+        ]
+      },
+      {
+        "status": "stage_complete",
+        "stage_reached": "stage1_plan",
+        "blocker_reason": null,
+        "blocker_details": "",
+        "friction_highlights": [
+          "resumed plan from .cw/plan-draft.md \u2014 prior blocked/parked attempt",
+          "plan revision cycle 1/1 used: Plan Reviewer MUST_FIX (4 items: missing Pre-flight Resolution Conformance section, missing unconfigured-status touch-point, incomplete file enumeration, false mock-login equivalence claim) \u2014 all resolved and re-reviewed clean (NO_ISSUES)",
+          "soundness risk codified: hard-fail-shared-path \u2014 see wiki/local/inbox/lesson-soundness-codify-hard-fail-shared-path-2026-09-26.md",
+          "soundness risk codified: unconfigured-signal-channel \u2014 see wiki/local/inbox/lesson-soundness-codify-unconfigured-signal-channel-2026-09-26.md"
+        ]
+      },
+      {
+        "status": "stage_complete",
+        "stage_reached": "stage2_impl",
+        "blocker_reason": null,
+        "blocker_details": "",
+        "friction_highlights": [
+          "entry-gate test moved from planned app/__tests__/index.test.tsx to tests/app/index.test.tsx \u2014 expo-router bundles any .tsx under app/ as a route (no jest globals there), and tsconfig would tsc-check it; same 4 test cases delivered, app/ coverage convention untouched",
+          "ory.ts uses require('@ory/client-fetch') instead of dynamic import() \u2014 babel-preset-expo strips import() for Metro, which breaks under Jest (ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING_FLAG) and would silently masquerade as \"SDK not installed\"; verified with a real `expo export --platform android` (SDK absent) that the bundle still succeeds under Metro's allowOptionalDependencies",
+          "1 extra file beyond the plan's 17-file enumeration: src/auth/providers/external-modules.d.ts (ambient @ory/client-fetch types, subset of the real v1.22.66 tarball typings) \u2014 within scope-conformance gate's allowed slack (2 extra vs 8 allowed), verified via independent orchestrator re-run",
+          "pre-mutation guard script (check_not_main_checkout.py) invocation snippet calls `python`, which doesn't exist on this machine (only python3) \u2014 agent ran it manually via python3 (exit 0) before every commit/push; the guard snippet should be fixed to call python3",
+          "Ory SDK test fixtures are shaped from real @ory/client-fetch typings, not captured live Kratos responses (no live instance available) \u2014 kept defensive/sparse"
+        ]
+      }
+    ]
+  }
+}

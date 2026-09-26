@@ -17,27 +17,23 @@ const mockOry = {
   performNativeLogout: jest.fn(),
 }
 
-jest.mock(
-  '@ory/client-fetch',
-  () => {
-    if (!mockOry.installed) {
-      throw new Error("Cannot find module '@ory/client-fetch'")
-    }
-    return {
-      Configuration: jest.fn((params: unknown) => {
-        mockOry.configurations.push(params)
-        return { params }
-      }),
-      FrontendApi: jest.fn(() => ({
-        toSession: mockOry.toSession,
-        createNativeLoginFlow: mockOry.createNativeLoginFlow,
-        updateLoginFlow: mockOry.updateLoginFlow,
-        performNativeLogout: mockOry.performNativeLogout,
-      })),
-    }
-  },
-  { virtual: true }
-)
+jest.mock('@ory/client-fetch', () => {
+  if (!mockOry.installed) {
+    throw new Error("Cannot find module '@ory/client-fetch'")
+  }
+  return {
+    Configuration: jest.fn((params: unknown) => {
+      mockOry.configurations.push(params)
+      return { params }
+    }),
+    FrontendApi: jest.fn(() => ({
+      toSession: mockOry.toSession,
+      createNativeLoginFlow: mockOry.createNativeLoginFlow,
+      updateLoginFlow: mockOry.updateLoginFlow,
+      performNativeLogout: mockOry.performNativeLogout,
+    })),
+  }
+})
 
 type OryModule = typeof import('../ory')
 // Fresh per test: jest.resetModules() below would otherwise pair a stale renderer with a new React.

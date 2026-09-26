@@ -1,4 +1,5 @@
 import type { AuthProviderImplementation, AuthProviderType, AuthState } from '../types'
+import { AUTH_STATUS_UNCONFIGURED } from '../types'
 
 /**
  * Placeholder for provider choices this template declares but does not implement.
@@ -12,7 +13,7 @@ export function createUnconfiguredProvider(type: AuthProviderType): AuthProvider
     isAuthenticated: false,
     isLoading: false,
     error,
-    status: 'unconfigured',
+    status: AUTH_STATUS_UNCONFIGURED,
   }
 
   return {

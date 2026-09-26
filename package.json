@@ -17,6 +17,7 @@
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
     "@hookform/resolvers": "^5.2.2",
+    "@ory/client-fetch": "^1.22.66",
     "@tanstack/react-query": "^5.90.21",
     "expo": "^57.0.0",
     "expo-constants": "~57.0.6",

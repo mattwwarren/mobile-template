@@ -1,13 +1,13 @@
 import { createContext, useEffect, useMemo, useState } from 'react'
 import { createAuthProvider } from './providers'
-import type { AuthProviderImplementation, AuthProviderType, AuthUser } from './types'
+import type { AuthProviderImplementation, AuthProviderType, AuthStatus, AuthUser } from './types'
 
 export interface AuthContextValue {
   user: AuthUser | null
   isAuthenticated: boolean
   isLoading: boolean
   error: Error | null
-  status?: 'unconfigured'
+  status?: AuthStatus
   login: (credentials?: { email?: string; password?: string }) => Promise<void>
   logout: () => Promise<void>
 }
