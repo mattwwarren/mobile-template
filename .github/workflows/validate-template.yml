@@ -14,9 +14,11 @@ jobs:
       matrix:
         config:
           - name: default
-            args: '--data project_name="Test App" --data project_slug=test-app --data bundle_id=com.example.testapp'
+            args: '--data project_name="Test App" --data project_slug=test-app'
+            bundle_id: com.example.testapp
           - name: auth-enabled
-            args: '--data project_name="Auth App" --data project_slug=auth-app --data bundle_id=com.example.authapp --data auth_enabled=true --data auth_provider=mock'
+            args: '--data project_name="Auth App" --data project_slug=auth-app --data auth_enabled=true --data auth_provider=mock'
+            bundle_id: com.example.authapp
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -26,9 +28,19 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install copier
+      - name: Templatize
+        run: bash scripts/templatize.sh
+      - name: Verify templatize.sh jinja output
+        run: |
+          grep -F '"bundleIdentifier": "{{ bundle_id }}"' .templatized/app.json.jinja
+          grep -F '"package": "{{ bundle_id }}"' .templatized/app.json.jinja
       - name: Generate project (${{ matrix.config.name }})
         run: |
-          copier copy . /tmp/test-project --trust --defaults ${{ matrix.config.args }}
+          copier copy .templatized /tmp/test-project --trust --defaults ${{ matrix.config.args }} --data bundle_id=${{ matrix.config.bundle_id }}
+      - name: Verify bundle id substitution
+        run: |
+          grep -F '"bundleIdentifier": "${{ matrix.config.bundle_id }}"' /tmp/test-project/app.json
+          grep -F '"package": "${{ matrix.config.bundle_id }}"' /tmp/test-project/app.json
       - name: Install dependencies
         working-directory: /tmp/test-project
         run: npm install
