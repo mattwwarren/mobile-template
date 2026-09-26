@@ -9,6 +9,7 @@ export interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
   error: Error | null
+  status?: 'unconfigured'
 }
 
 export type AuthProviderType = 'mock' | 'ory' | 'auth0' | 'keycloak' | 'cognito'

@@ -7,6 +7,7 @@ export interface AuthContextValue {
   isAuthenticated: boolean
   isLoading: boolean
   error: Error | null
+  status?: 'unconfigured'
   login: (credentials?: { email?: string; password?: string }) => Promise<void>
   logout: () => Promise<void>
 }
