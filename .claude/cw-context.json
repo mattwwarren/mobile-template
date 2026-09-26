@@ -1,0 +1,80 @@
+{
+  "schema_version": 9,
+  "session_id": "fad1699e",
+  "session_name": "mobile-template/auto-dev/7",
+  "client": "mobile-template",
+  "lane": "default",
+  "purpose": "impl",
+  "ticket_id": "7",
+  "headless": false,
+  "worktree_path": "/home/matthew/.cw/wt/2ac15ad7/dev-7",
+  "workspace_path": "/home/matthew/workspace/templates/mobile-template",
+  "agent_spawn_stamp": {
+    "unresolved_count": 0,
+    "last_stamped_at": null
+  },
+  "attempt": 4,
+  "wall_clock_budget_seconds": null,
+  "stage_started_at": "2026-09-26T08:15:31.519356+00:00",
+  "expected_sentinel_schema_ref": {
+    "command": "cw schema show auto-dev-result --format=tldr",
+    "model": "AutoDevResult",
+    "version": 8
+  },
+  "queue_metadata": {
+    "scope_hint": null,
+    "plan_source": null,
+    "headless_timeout_override": null,
+    "regressed_into_stage": null,
+    "pending_operator_comment": false,
+    "plan_approved_at": null,
+    "plan_approved_fingerprint": null,
+    "scope_drift_approved_extra_files": null,
+    "scope_drift_approved_head": null
+  },
+  "world_state_snapshot": {
+    "origin_main_sha_at_spawn": "e06843f78b0c4d4a0a6aecf7c6a6d11ad5155b08",
+    "origin_main_branch": "main",
+    "prior_attempts_summary": [
+      {
+        "status": "ambiguities_pending_resolution",
+        "stage_reached": "stage1_plan",
+        "blocker_reason": null,
+        "blocker_details": "",
+        "friction_highlights": [
+          "consolidated park: 1 ambiguities, 0 premises, 0 advisory findings, scope large",
+          "plan-soundness friction WARN: ARCHITECTURE.md uses a flat \"Invariants\" list rather than the \u00a77/\u00a78 principles/anti-patterns structure this reviewer expects \u2014 doc-structure mismatch, not a plan defect"
+        ]
+      },
+      {
+        "status": "stage_complete",
+        "stage_reached": "stage1_plan",
+        "blocker_reason": null,
+        "blocker_details": "",
+        "friction_highlights": [
+          "resumed plan from .cw/plan-draft.md \u2014 prior blocked/parked attempt",
+          "plan-stage item settled: A1 -> ADOPTED - round 1",
+          "plan-spec-reviewed v2: NO_ISSUES",
+          "plan-soundness-reviewed v1: NO_ISSUES"
+        ]
+      },
+      {
+        "status": "stage_complete",
+        "stage_reached": "stage2_impl",
+        "blocker_reason": null,
+        "blocker_details": "",
+        "friction_highlights": [
+          "ERESOLVE claim reproduced today after all (contra plan's own scratch test) - fix resolves it; independently re-verified via clean npm install in gate worktree",
+          "expo install --fix ERESOLVE'd on first run pre-fix; agent applied plan steps 2-3 (screens exact pin, jest-preset floor) before re-running - commit 1 combines expo-written + manual ranges rather than the plan's separate-commit split",
+          "expo install --fix narrowed (not widened) several ranges beyond plan prediction: expo ^57.0.0->~57.0.25, expo-router/linking/secure-store/jest-expo tightened to observed versions - scope-conformance gate passed clean (0 extra files)",
+          "added npm update commit (054b784) to pull newer in-range lockfile resolutions (e.g. biome 2.5.4->2.5.14) since npm install alone keeps locked versions",
+          "large lockfile transitive churn accepted per plan's Adopted Assumptions; removed @testing-library/dom, jest-dom, user-event - agent grepped and confirmed unreferenced",
+          "pre-existing npm peer warnings remain (react-native-worklets vs expo-modules-core; test-renderer/react-reconciler wants react ^19.3.0 vs pinned 19.2.3) - present pre-change too, not new; tests pass 71/71",
+          "pre-existing biome info remains (recommended field deprecated, use preset) - out of this plan's one-line schema-only scope",
+          "check_not_main_checkout.py guard: 'python' not on PATH (exit 127) in agent's environment - agent used python3 per the script's own shebang instead, ran clean before every commit/push; orchestrator guard snippet should invoke python3",
+          "impl agent's own completion report (Health Check/Completion Artifacts prose) was truncated and a follow-up request for the rest had not returned by gate time - not blocking, since Step 2.5 independently re-verified every gated fact (diff --stat, scope-conformance script, npm test 71/71, biome check exit 0, tsc --noEmit exit 0, 4 commits with impl-complete trailer) directly against the pushed branch rather than trusting the prose"
+        ]
+      }
+    ]
+  }
+}
