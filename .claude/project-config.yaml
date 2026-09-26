@@ -24,10 +24,9 @@ pr:
   tool: gh
   auto_create: false
   branch_pattern: "{type}/{plan_id}"
-  # Private free-plan repo: branch protection unavailable, so gh pr merge --auto
-  # would merge instantly. Operator merges. Flip to true if repo goes public and
-  # gets required checks.
-  auto_merge: false
+  # Repo went public 2026-09-25 and main requires the lint / typecheck / test /
+  # validate (*) checks, so an armed auto-merge waits on CI.
+  auto_merge: true
 
 plan_exit:
   mode: suggest

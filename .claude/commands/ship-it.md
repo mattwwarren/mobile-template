@@ -8,9 +8,9 @@ allowed-tools: ["Bash", "Read"]
 
 Project-level ship-it for `mobile-template`. Runs after `/prep-pr` finishes its
 self-review and quality gates. Covers push, PR creation, and (when
-`.claude/project-config.yaml` allows it) arming auto-merge. This repo is private
-without branch protection, so the config pins `pr.auto_merge: false` and the
-operator merges after `validate-template` is green.
+`.claude/project-config.yaml` allows it) arming auto-merge; the merge itself
+waits on the required `lint` / `typecheck` / `test` / `validate (*)` checks
+protecting `main`.
 
 **Arguments:** "$ARGUMENTS"
 
