@@ -75,6 +75,7 @@ EXCLUDE_PATTERNS=(
     # that file directly, so it can only run (and only makes sense) in this
     # template repo, not in a generated project that never receives the file.
     "tests/policy/validate-template-workflow.test.ts"
+    "tests/policy/eas-toggle.test.ts"
     # Phase completion files
     "phase-*-complete.md"
 )
@@ -105,6 +106,8 @@ echo -e "${GREEN}[2/6] Templating config files (.jinja)...${NC}"
 # package.json -> package.json.jinja
 if [[ -f "${OUTPUT_DIR}/package.json" ]]; then
     sed -i "s/\"mobile-template\"/\"${SED_SLUG}\"/g" "${OUTPUT_DIR}/package.json"
+    # {%- strips the preceding newline so a disabled toggle leaves no blank line (biome rejects whitespace-only lines)
+    sed -i 's/^\(\s*\)"expo-updates": "~57.0.23",$/{%- if enable_eas %}\n\1"expo-updates": "~57.0.23",\n{%- endif %}/' "${OUTPUT_DIR}/package.json"
     mv "${OUTPUT_DIR}/package.json" "${OUTPUT_DIR}/package.json.jinja"
     echo "  Templated: package.json -> package.json.jinja"
 fi
@@ -116,6 +119,8 @@ if [[ -f "${OUTPUT_DIR}/app.json" ]]; then
     sed -i "s/\"scheme\": \"mobile-template\"/\"scheme\": \"${SED_SLUG}\"/g" "${OUTPUT_DIR}/app.json"
     sed -i "s/\"bundleIdentifier\": \"com.example.mobiletemplate\"/\"bundleIdentifier\": \"${SED_BUNDLE_ID}\"/g" "${OUTPUT_DIR}/app.json"
     sed -i "s/\"package\": \"com.example.mobiletemplate\"/\"package\": \"${SED_BUNDLE_ID}\"/g" "${OUTPUT_DIR}/app.json"
+    sed -i 's/"plugins": \["expo-router", "expo-updates"\],/"plugins": ["expo-router"{% if enable_eas %}, "expo-updates"{% endif %}],/' "${OUTPUT_DIR}/app.json"
+    sed -i 's/^\(\s*\)"runtimeVersion": { "policy": "fingerprint" },$/{%- if enable_eas %}\n\1"runtimeVersion": { "policy": "fingerprint" },\n{%- endif %}/' "${OUTPUT_DIR}/app.json"
     mv "${OUTPUT_DIR}/app.json" "${OUTPUT_DIR}/app.json.jinja"
     echo "  Templated: app.json -> app.json.jinja"
 fi
