@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import updatesPackage from '../../scripts/eas-updates-package'
 
 const EXPECTED_PROFILES = ['development', 'preview', 'production']
 
@@ -8,10 +9,6 @@ describe('EAS / OTA update configuration', () => {
   const easJsonPath = join(projectRoot, 'eas.json')
   const appJson = JSON.parse(readFileSync(join(projectRoot, 'app.json'), 'utf-8'))
   const packageJson = JSON.parse(readFileSync(join(projectRoot, 'package.json'), 'utf-8'))
-  const updatesPackage = appJson.expo.plugins.find(
-    (plugin: unknown): plugin is string => typeof plugin === 'string' && plugin.endsWith('-updates')
-  )
-
   describe('eas.json', () => {
     it('exists at the project root', () => {
       expect(existsSync(easJsonPath)).toBe(true)
@@ -45,7 +42,8 @@ describe('EAS / OTA update configuration', () => {
 
   describe('app.json expo-updates wiring', () => {
     it('registers the expo-updates config plugin', () => {
-      expect(updatesPackage).toBeDefined()
+      expect(updatesPackage).toBe('expo-updates')
+      expect(appJson.expo.plugins).toContain('expo-updates')
     })
 
     it('uses the fingerprint runtime version policy', () => {
@@ -55,14 +53,12 @@ describe('EAS / OTA update configuration', () => {
 
   describe('package.json expo-updates dependency', () => {
     it('declares expo-updates as a runtime dependency', () => {
-      expect(updatesPackage).toBeDefined()
-      expect(packageJson.dependencies).toHaveProperty(updatesPackage)
+      expect(packageJson.dependencies).toHaveProperty('expo-updates')
     })
 
     it('keeps the source plugin and dependency on the same package', () => {
-      expect(updatesPackage).toBeDefined()
-      expect(appJson.expo.plugins).toContain(updatesPackage)
-      expect(packageJson.dependencies[updatesPackage]).toEqual(expect.any(String))
+      expect(appJson.expo.plugins).toContain('expo-updates')
+      expect(packageJson.dependencies['expo-updates']).toEqual(expect.any(String))
     })
   })
 })

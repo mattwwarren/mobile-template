@@ -69,6 +69,7 @@ EXCLUDE_PATTERNS=(
     ".claude/review-verdict.*"
     # Template infrastructure files (not for generated projects)
     "scripts/templatize.sh"
+    "scripts/eas-updates-package.js"
     ".github/workflows/publish-template.yml"
     ".github/workflows/validate-template.yml"
     # Policy test for the excluded validate-template.yml above: it asserts on
@@ -100,18 +101,18 @@ SED_NAME='\x7B\x7B project_name \x7D\x7D'
 SED_BUNDLE_ID='\x7B\x7B bundle_id \x7D\x7D'
 SED_API_URL='\x7B\x7B api_url \x7D\x7D'
 
-# Keep the EAS dependency identifier and version sourced from the runnable
-# project config; the templating logic must not duplicate either literal.
+# Keep the EAS dependency identifier centralized while sourcing its version
+# from the runnable project config.
 EAS_UPDATES_PACKAGE="$(node -e '
 const fs = require("node:fs")
 const root = process.argv[1]
+const expectedPackage = require(`${root}/scripts/eas-updates-package.js`)
 const packageJson = JSON.parse(fs.readFileSync(`${root}/package.json`, "utf8"))
 const appJson = JSON.parse(fs.readFileSync(`${root}/app.json`, "utf8"))
-const dependency = appJson.expo.plugins.find(
-  (plugin) => typeof plugin === "string" && plugin.endsWith("-updates")
-)
-if (!dependency || !packageJson.dependencies[dependency]) process.exit(1)
-process.stdout.write(dependency)
+if (expectedPackage !== "expo-updates") process.exit(1)
+if (!appJson.expo.plugins.includes(expectedPackage)) process.exit(1)
+if (!packageJson.dependencies[expectedPackage]) process.exit(1)
+process.stdout.write(expectedPackage)
 ' "${PROJECT_ROOT}")"
 EAS_UPDATES_VERSION="$(node -p 'require(process.argv[1]).dependencies[process.argv[2]]' "${PROJECT_ROOT}/package.json" "${EAS_UPDATES_PACKAGE}")"
 
