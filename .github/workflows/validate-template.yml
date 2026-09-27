@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
   workflow_call:
+  schedule:
+    # Weekly drift check (Monday 06:00 UTC) — catches Expo SDK
+    # compatibility drift that only surfaces between PRs.
+    - cron: '0 6 * * 1'
 
 jobs:
   validate:
@@ -44,6 +48,9 @@ jobs:
       - name: Install dependencies
         working-directory: /tmp/test-project
         run: npm install
+      - name: Check Expo dependency alignment
+        working-directory: /tmp/test-project
+        run: npx expo install --check
       - name: Lint
         working-directory: /tmp/test-project
         run: npx biome check .

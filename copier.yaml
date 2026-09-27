@@ -20,6 +20,9 @@ _exclude:
   - "ios/**"
   - "android"
   - "android/**"
+  # Excluded by design (ARCHITECTURE.md invariant 8): generated projects
+  # resolve dependencies fresh from the registry rather than carrying a
+  # frozen lockfile.
   - "package-lock.json"
   - ".github/workflows/publish-template.yml"
 

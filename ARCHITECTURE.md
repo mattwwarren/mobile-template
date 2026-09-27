@@ -171,3 +171,23 @@ is disabled in this repo; CI green is the bar (see
    not per-screen.
 7. Zero-violations bar: Biome, `tsc --noEmit`, and Jest must all pass
    clean; no suppressions without explicit approval.
+8. Dependency pinning: generated projects resolve dependencies fresh from
+   the registry rather than carrying a frozen lockfile (`package-lock.json`
+   is excluded from Copier output in `copier.yaml` and
+   `scripts/templatize.sh`). To keep that fresh resolution safe, every
+   entry in `package.json`'s `dependencies` and `devDependencies` (33
+   entries total: 23 `dependencies` + 10 `devDependencies`) is pinned to a
+   minor range (`~`) — 15 of those were re-pinned from `^`/bare-exact to
+   close the drift vector — except the Expo-SDK-managed native/ABI
+   packages that `expo install --fix` keeps exact (`react`, `react-dom`,
+   `react-native`, `react-native-reanimated`, `react-native-screens`,
+   `react-native-worklets`). `validate-template.yml` runs
+   `npx expo install --check` against a fresh install on every push/PR
+   (failing the PR, not `main`, on drift) and on a weekly `schedule:` so
+   drift surfaces between PRs too. `tests/policy/dependency-pinning.test.ts`
+   and `tests/policy/validate-template-workflow.test.ts` enforce both
+   halves of this policy.
+
+   Verification (2026-09-27): a fresh generated project with an intentional
+   installed `expo-font@56.0.0` mismatch reported `Found outdated dependencies`
+   and `npx expo install --check` exited with status 1.
