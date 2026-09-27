@@ -58,21 +58,27 @@ describe('itemsApi mock/real switch', () => {
 })
 
 describe('config', () => {
-  it('reads EXPO_PUBLIC_USE_MOCKS from process.env', () => {
-    const original = process.env.EXPO_PUBLIC_USE_MOCKS
+  const original = process.env.EXPO_PUBLIC_USE_MOCKS
 
+  afterEach(() => {
+    process.env.EXPO_PUBLIC_USE_MOCKS = original
+  })
+
+  it('sets USE_MOCKS to true when EXPO_PUBLIC_USE_MOCKS is "true"', () => {
     jest.isolateModules(() => {
+      jest.unmock('@/config')
       process.env.EXPO_PUBLIC_USE_MOCKS = 'true'
       const { USE_MOCKS } = require('@/config')
       expect(USE_MOCKS).toBe(true)
     })
+  })
 
+  it('sets USE_MOCKS to false when EXPO_PUBLIC_USE_MOCKS is "false"', () => {
     jest.isolateModules(() => {
+      jest.unmock('@/config')
       process.env.EXPO_PUBLIC_USE_MOCKS = 'false'
       const { USE_MOCKS } = require('@/config')
       expect(USE_MOCKS).toBe(false)
     })
-
-    process.env.EXPO_PUBLIC_USE_MOCKS = original
   })
 })

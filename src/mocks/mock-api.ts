@@ -1,4 +1,5 @@
 import type { ItemListParams } from '@/api/items'
+import { ApiError } from '@/api/client'
 import type { DashboardStats, Item, ItemCreate, ItemUpdate, PaginatedResponse } from '@/api/types'
 import { createDashboardStats, createItem, createItemList } from './factories/items'
 
@@ -47,7 +48,7 @@ export const mockItemsApi = {
     await delay()
     const item = items.find((i) => i.id === id)
     if (!item) {
-      throw new Error(`Item ${id} not found`)
+      throw new ApiError(404, 'Not Found', `Item ${id} not found`)
     }
     return item
   },
@@ -67,7 +68,7 @@ export const mockItemsApi = {
     await delay()
     const index = items.findIndex((i) => i.id === id)
     if (index === -1) {
-      throw new Error(`Item ${id} not found`)
+      throw new ApiError(404, 'Not Found', `Item ${id} not found`)
     }
     const updated = { ...items[index], ...data, updated_at: new Date().toISOString() } as Item
     items = items.map((i) => (i.id === id ? updated : i))

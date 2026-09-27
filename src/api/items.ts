@@ -1,3 +1,5 @@
+import { mockItemsApi } from '@/mocks/mock-api'
+import { USE_MOCKS } from '@/config'
 import { fetchApi } from './client'
 import type { DashboardStats, Item, ItemCreate, ItemUpdate, PaginatedResponse } from './types'
 
@@ -7,7 +9,7 @@ export interface ItemListParams {
   search?: string
 }
 
-export const itemsApi = {
+const realItemsApi = {
   list: (params: ItemListParams = {}) => {
     const searchParams = new URLSearchParams()
     searchParams.set('page', String(params.page ?? 1))
@@ -36,3 +38,5 @@ export const itemsApi = {
 
   dashboardStats: () => fetchApi<DashboardStats>('/dashboard/stats'),
 }
+
+export const itemsApi = USE_MOCKS ? mockItemsApi : realItemsApi
