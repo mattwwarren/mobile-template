@@ -70,6 +70,10 @@ EXCLUDE_PATTERNS=(
     "scripts/templatize.sh"
     ".github/workflows/publish-template.yml"
     ".github/workflows/validate-template.yml"
+    # Policy test for the excluded validate-template.yml above: it asserts on
+    # that file directly, so it can only run (and only makes sense) in this
+    # template repo, not in a generated project that never receives the file.
+    "tests/policy/validate-template-workflow.test.ts"
     # Phase completion files
     "phase-*-complete.md"
 )
