@@ -100,6 +100,21 @@ SED_NAME='\x7B\x7B project_name \x7D\x7D'
 SED_BUNDLE_ID='\x7B\x7B bundle_id \x7D\x7D'
 SED_API_URL='\x7B\x7B api_url \x7D\x7D'
 
+# Keep the EAS dependency identifier and version sourced from the runnable
+# project config; the templating logic must not duplicate either literal.
+EAS_UPDATES_PACKAGE="$(node -e '
+const fs = require("node:fs")
+const root = process.argv[1]
+const packageJson = JSON.parse(fs.readFileSync(`${root}/package.json`, "utf8"))
+const appJson = JSON.parse(fs.readFileSync(`${root}/app.json`, "utf8"))
+const dependency = appJson.expo.plugins.find(
+  (plugin) => typeof plugin === "string" && plugin.endsWith("-updates")
+)
+if (!dependency || !packageJson.dependencies[dependency]) process.exit(1)
+process.stdout.write(dependency)
+' "${PROJECT_ROOT}")"
+EAS_UPDATES_VERSION="$(node -p 'require(process.argv[1]).dependencies[process.argv[2]]' "${PROJECT_ROOT}/package.json" "${EAS_UPDATES_PACKAGE}")"
+
 # Step 2: Replace references in config files that become .jinja templates
 echo -e "${GREEN}[2/6] Templating config files (.jinja)...${NC}"
 
@@ -107,7 +122,7 @@ echo -e "${GREEN}[2/6] Templating config files (.jinja)...${NC}"
 if [[ -f "${OUTPUT_DIR}/package.json" ]]; then
     sed -i "s/\"mobile-template\"/\"${SED_SLUG}\"/g" "${OUTPUT_DIR}/package.json"
     # {%- strips the preceding newline so a disabled toggle leaves no blank line (biome rejects whitespace-only lines)
-    sed -i 's/^\(\s*\)"expo-updates": "~57.0.23",$/{%- if enable_eas %}\n\1"expo-updates": "~57.0.23",\n{%- endif %}/' "${OUTPUT_DIR}/package.json"
+    sed -i "s/^\(\\s*\)\"${EAS_UPDATES_PACKAGE}\": \"[^\"]*\",$/{%- if enable_eas %}\\n\1\"${EAS_UPDATES_PACKAGE}\": \"${EAS_UPDATES_VERSION}\",\\n{%- endif %}/" "${OUTPUT_DIR}/package.json"
     mv "${OUTPUT_DIR}/package.json" "${OUTPUT_DIR}/package.json.jinja"
     echo "  Templated: package.json -> package.json.jinja"
 fi
@@ -119,7 +134,7 @@ if [[ -f "${OUTPUT_DIR}/app.json" ]]; then
     sed -i "s/\"scheme\": \"mobile-template\"/\"scheme\": \"${SED_SLUG}\"/g" "${OUTPUT_DIR}/app.json"
     sed -i "s/\"bundleIdentifier\": \"com.example.mobiletemplate\"/\"bundleIdentifier\": \"${SED_BUNDLE_ID}\"/g" "${OUTPUT_DIR}/app.json"
     sed -i "s/\"package\": \"com.example.mobiletemplate\"/\"package\": \"${SED_BUNDLE_ID}\"/g" "${OUTPUT_DIR}/app.json"
-    sed -i 's/"plugins": \["expo-router", "expo-updates"\],/"plugins": ["expo-router"{% if enable_eas %}, "expo-updates"{% endif %}],/' "${OUTPUT_DIR}/app.json"
+    sed -i "s/\"plugins\": \[\"expo-router\", \"${EAS_UPDATES_PACKAGE}\"\],/\"plugins\": [\"expo-router\"{% if enable_eas %}, \"${EAS_UPDATES_PACKAGE}\"{% endif %}],/" "${OUTPUT_DIR}/app.json"
     sed -i 's/^\(\s*\)"runtimeVersion": { "policy": "fingerprint" },$/{%- if enable_eas %}\n\1"runtimeVersion": { "policy": "fingerprint" },\n{%- endif %}/' "${OUTPUT_DIR}/app.json"
     mv "${OUTPUT_DIR}/app.json" "${OUTPUT_DIR}/app.json.jinja"
     echo "  Templated: app.json -> app.json.jinja"

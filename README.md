@@ -195,7 +195,7 @@ Template variables:
 Builds and over-the-air (OTA) updates go through [EAS](https://docs.expo.dev/eas/). `eas.json` defines
 three build profiles. Each profile is tied to an update channel of the same name:
 
-- `development` - development client build for internal distribution, channel `development`
+- `development` - standard internal-distribution build for development, channel `development`
 - `preview` - internal-distribution build for testers, channel `preview`
 - `production` - store build, channel `production`
 

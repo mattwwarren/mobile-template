@@ -56,15 +56,19 @@ jobs:
         run: |
           test -f /tmp/test-project/eas.json
           node -e "const c=require('/tmp/test-project/eas.json'); const p=Object.keys(c.build).sort(); if(JSON.stringify(p)!==JSON.stringify(['development','preview','production'])) process.exit(1); if(new Set(Object.values(c.build).map(x=>x.channel)).size!==3) process.exit(1);"
-          grep -F '"expo-updates"' /tmp/test-project/package.json
-          grep -F '"expo-updates"' /tmp/test-project/app.json
+          EAS_UPDATES_PACKAGE="$(node -p "const app=require('./app.json'); app.expo.plugins.find((plugin) => typeof plugin === 'string' && plugin.endsWith('-updates'))")"
+          EAS_UPDATES_VERSION="$(node -p "require('./package.json').dependencies[process.argv[1]]" "$EAS_UPDATES_PACKAGE")"
+          node -e "const sourcePackage=require('./package.json'); const sourceApp=require('./app.json'); const generatedPackage=require('/tmp/test-project/package.json'); const generatedApp=require('/tmp/test-project/app.json'); const name=process.argv[1]; const version=process.argv[2]; if (!sourceApp.expo.plugins.includes(name) || sourcePackage.dependencies[name] !== version || generatedApp.expo.plugins.indexOf(name) === -1 || generatedPackage.dependencies[name] !== version) process.exit(1)" "$EAS_UPDATES_PACKAGE" "$EAS_UPDATES_VERSION"
+          grep -F "\"$EAS_UPDATES_PACKAGE\"" /tmp/test-project/package.json
+          grep -F "\"$EAS_UPDATES_PACKAGE\"" /tmp/test-project/app.json
           grep -F '"runtimeVersion"' /tmp/test-project/app.json
       - name: Verify EAS config absent
         if: matrix.config.eas_enabled == 'false'
         run: |
+          EAS_UPDATES_PACKAGE="$(node -p "const app=require('./app.json'); app.expo.plugins.find((plugin) => typeof plugin === 'string' && plugin.endsWith('-updates'))")"
           if [ -f /tmp/test-project/eas.json ]; then echo "eas.json should not exist"; exit 1; fi
-          if grep -q "expo-updates" /tmp/test-project/package.json; then echo "expo-updates dependency should be absent"; exit 1; fi
-          if grep -q "expo-updates" /tmp/test-project/app.json; then echo "expo-updates plugin should be absent"; exit 1; fi
+          if grep -q "$EAS_UPDATES_PACKAGE" /tmp/test-project/package.json; then echo "EAS updates dependency should be absent"; exit 1; fi
+          if grep -q "$EAS_UPDATES_PACKAGE" /tmp/test-project/app.json; then echo "EAS updates plugin should be absent"; exit 1; fi
           if grep -q "runtimeVersion" /tmp/test-project/app.json; then echo "runtimeVersion should be absent"; exit 1; fi
       - name: Install dependencies
         working-directory: /tmp/test-project
