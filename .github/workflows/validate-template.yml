@@ -20,9 +20,15 @@ jobs:
           - name: default
             args: '--data project_name="Test App" --data project_slug=test-app'
             bundle_id: com.example.testapp
+            eas_enabled: 'true'
           - name: auth-enabled
             args: '--data project_name="Auth App" --data project_slug=auth-app --data auth_enabled=true --data auth_provider=mock'
             bundle_id: com.example.authapp
+            eas_enabled: 'true'
+          - name: eas-disabled
+            args: '--data project_name="No EAS App" --data project_slug=no-eas-app --data enable_eas=false'
+            bundle_id: com.example.noeasapp
+            eas_enabled: 'false'
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -45,6 +51,21 @@ jobs:
         run: |
           grep -F '"bundleIdentifier": "${{ matrix.config.bundle_id }}"' /tmp/test-project/app.json
           grep -F '"package": "${{ matrix.config.bundle_id }}"' /tmp/test-project/app.json
+      - name: Verify EAS config present
+        if: matrix.config.eas_enabled == 'true'
+        run: |
+          test -f /tmp/test-project/eas.json
+          node -e "const c=require('/tmp/test-project/eas.json'); const p=Object.keys(c.build).sort(); if(JSON.stringify(p)!==JSON.stringify(['development','preview','production'])) process.exit(1); if(new Set(Object.values(c.build).map(x=>x.channel)).size!==3) process.exit(1);"
+          grep -F '"expo-updates"' /tmp/test-project/package.json
+          grep -F '"expo-updates"' /tmp/test-project/app.json
+          grep -F '"runtimeVersion"' /tmp/test-project/app.json
+      - name: Verify EAS config absent
+        if: matrix.config.eas_enabled == 'false'
+        run: |
+          if [ -f /tmp/test-project/eas.json ]; then echo "eas.json should not exist"; exit 1; fi
+          if grep -q "expo-updates" /tmp/test-project/package.json; then echo "expo-updates dependency should be absent"; exit 1; fi
+          if grep -q "expo-updates" /tmp/test-project/app.json; then echo "expo-updates plugin should be absent"; exit 1; fi
+          if grep -q "runtimeVersion" /tmp/test-project/app.json; then echo "runtimeVersion should be absent"; exit 1; fi
       - name: Install dependencies
         working-directory: /tmp/test-project
         run: npm install
