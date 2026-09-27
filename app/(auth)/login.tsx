@@ -17,6 +17,7 @@ import { borderRadius, colors, fontSize, spacing } from '@/lib/theme'
 export default function LoginScreen() {
   const { login } = useAuth()
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -24,7 +25,7 @@ export default function LoginScreen() {
     setError(null)
     setIsSubmitting(true)
     try {
-      await login(email ? { email } : undefined)
+      await login(email ? { email, password } : undefined)
       router.replace('/(tabs)')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Login failed')
@@ -52,6 +53,18 @@ export default function LoginScreen() {
             autoCapitalize="none"
             autoComplete="email"
             keyboardType="email-address"
+            editable={!isSubmitting}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor={colors.textSecondary}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
+            autoComplete="password"
             editable={!isSubmitting}
           />
 

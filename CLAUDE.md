@@ -129,17 +129,23 @@ import type { Item, ItemCreate, PaginatedResponse, DashboardStats } from '@/api/
 
 ### Pluggable Provider
 Auth uses a provider abstraction pattern:
-- **mock** - Auto-logged-in for development (the only implemented provider)
-- **ory** / **auth0** / **keycloak** / **cognito** - planned production
-  providers; currently unimplemented, selection falls back to mock (see
-  ARCHITECTURE.md Known gaps)
+- **mock** - Auto-logged-in for development
+- **ory** - Ory Kratos native (API) flow: email + password submitted to a
+  native login flow, session token stored in `expo-secure-store` and
+  validated via `toSession` on launch. Needs `EXPO_PUBLIC_ORY_SDK_URL`;
+  `@ory/client-fetch` is an optional dependency loaded via try/`require`
+- **auth0** / **keycloak** / **cognito** - planned; selecting one yields a
+  provider with `status: 'unconfigured'`, which renders a full-screen error
+  at the `app/index.tsx` entry gate — no silent fallback to mock, no throw
+  (see ARCHITECTURE.md Known gaps)
 
 ### Token Storage
 - Tokens stored via `expo-secure-store` (device keychain/keystore)
 - **Never** use `AsyncStorage` for tokens -- it is not encrypted
 
 ### Protected Routes
-Root `_layout.tsx` redirects unauthenticated users to `/(auth)/login`
+The `app/index.tsx` entry gate redirects unauthenticated users to `/(auth)/login`
+(it is the only auth guard — see ARCHITECTURE.md Invariant 6)
 
 ## Testing Patterns
 

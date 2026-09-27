@@ -124,17 +124,30 @@ Authentication uses a pluggable provider pattern:
 | Provider | Use Case |
 |----------|----------|
 | `mock` | Development (auto-logged-in) |
-| `ory` | Ory (open source, self-hosted) — planned |
+| `ory` | Ory (open source, self-hosted) — native API flow |
 | `auth0` | Auth0 (commercial SaaS) — planned |
 | `keycloak` | Keycloak (open source) — planned |
 | `cognito` | AWS Cognito — planned |
 
 Configure via `EXPO_PUBLIC_AUTH_PROVIDER` in `.env`.
 
-> **Note:** only `mock` is currently implemented. The other providers are
-> declared choices whose factories don't exist yet — selecting them falls
-> back to mock (see `src/auth/providers/index.ts` and ARCHITECTURE.md's
-> Known gaps).
+> **Note:** only `mock` and `ory` are implemented. `auth0`, `keycloak`, and
+> `cognito` are declared choices that resolve to an "unconfigured" provider
+> (`status: 'unconfigured'`): selecting one renders a full-screen error at the
+> `app/index.tsx` entry gate. There is no silent fallback to mock and no thrown
+> exception (see `src/auth/providers/index.ts` and ARCHITECTURE.md's Known gaps).
+
+### Ory
+
+The `ory` provider uses Ory Kratos **native (API) flows**: the login screen's
+email + password are submitted to a native login flow, and the returned session
+token is stored in `expo-secure-store` and validated on launch via
+`toSession` with the `X-Session-Token` header. No cookies or browser redirects.
+
+1. `npm install @ory/client-fetch` (optional dependency; without it the
+   provider reports a clear error instead of crashing the bundle)
+2. Set `EXPO_PUBLIC_AUTH_PROVIDER=ory` and `EXPO_PUBLIC_ORY_SDK_URL` (your Ory
+   project / Kratos public URL) in `.env`
 
 Tokens are stored securely using `expo-secure-store` (device keychain/keystore).
 
@@ -191,7 +204,7 @@ Edit `src/lib/theme.ts` to change colors, spacing, font sizes, and border radii.
 ### Adding a Provider
 
 1. Create provider in `src/auth/providers/`
-2. Register in auth context
+2. Return it from its case in `createAuthProvider` (`src/auth/providers/index.ts`)
 3. Set `EXPO_PUBLIC_AUTH_PROVIDER` in `.env`
 
 ## License

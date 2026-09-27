@@ -1,16 +1,21 @@
 import { Redirect } from 'expo-router'
 import { ActivityIndicator, StyleSheet, View } from 'react-native'
 
-import { useAuth } from '@/auth'
+import { AUTH_STATUS_UNCONFIGURED, useAuth } from '@/auth'
+import { ErrorView } from '@/components/shared/ErrorView'
 import { colors } from '@/lib/theme'
 
 export default function Index() {
-  const { isAuthenticated, isLoading } = useAuth()
+  const { isAuthenticated, isLoading, status, error } = useAuth()
+
+  if (status === AUTH_STATUS_UNCONFIGURED && error) {
+    return <ErrorView error={error} />
+  }
 
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color={colors.primary} />
+        <ActivityIndicator size="large" color={colors.primary} testID="auth-loading" />
       </View>
     )
   }

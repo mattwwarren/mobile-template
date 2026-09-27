@@ -27,12 +27,13 @@ Copier variables: identity (`project_name`/`project_slug`), `bundle_id`,
 `api_url`, `auth_enabled` → `auth_provider`
 (none/mock/ory/auth0/keycloak/cognito), `use_mocks`.
 
-> **Known gaps:** (1) Only the `mock` auth provider is implemented —
-> `ory`/`auth0`/`keycloak`/`cognito` are declared choices whose factory
-> cases don't exist, so selecting them silently falls back to mock
-> (`src/auth/providers/index.ts`). README/CLAUDE.md's provider tables
-> overstate this. (2) `use_mocks` sets `EXPO_PUBLIC_USE_MOCKS` in `.env`,
-> but nothing in `src/`/`app/` reads that variable — mock-vs-real API is
+> **Known gaps:** (1) Only `mock` and `ory` are implemented.
+> `auth0`/`keycloak`/`cognito` are declared choices whose factory cases
+> resolve to an explicit `status: 'unconfigured'` provider
+> (`src/auth/providers/index.ts`) — selecting one renders a full-screen
+> error at the `app/index.tsx` entry gate rather than silently falling back
+> to mock or throwing an uncaught exception. (2) `use_mocks` sets
+> `EXPO_PUBLIC_USE_MOCKS` in `.env`, but nothing in `src/`/`app/` reads that variable — mock-vs-real API is
 > not an env switch; mocks are applied at the API-client level in tests
 > (`jest.mock`).
 
@@ -87,7 +88,7 @@ Deliberate divergences from react-template's otherwise-identical
   rather than the web template's users/organizations/memberships/documents.
 
 `src/auth/` follows the web template's context + pluggable-provider-factory
-pattern (same file roles), but synchronous and mock-only (see Known gaps).
+pattern (same file roles); `mock` and `ory` are implemented (see Known gaps).
 `src/components/` splits into `ui/` (hand-rolled RN primitives — Button,
 Card, Badge, Input, LoadingSpinner; no shadcn on native) and `shared/`
 (ErrorView, FormField — a react-hook-form `Controller` wrapper). Styling is
@@ -121,7 +122,12 @@ on push.
 
 > **Known gap:** `useTaskEvents` is implemented and tested but no screen
 > consumes it yet — it ships ahead of a tasks UI, to keep the three-way
-> contract (API / worker / clients) exercised.
+> contract (API / worker / clients) exercised. This is a confirmed decision
+> (contract-only), not an open question: building a real tasks screen is
+> blocked on `fastapi-template#62` (publishing `Task*Event` OpenAPI schemas),
+> which a future tasks resource needs so `npm run generate:types` can produce
+> real generated types instead of hand-rolled ones. Tracked by
+> `mobile-template#6`.
 
 ## Mocks and testing
 
