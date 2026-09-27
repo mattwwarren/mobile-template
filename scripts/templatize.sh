@@ -63,6 +63,7 @@ EXCLUDE_PATTERNS=(
     ".DS_Store"
     "*.log"
     ".claude/cw-context.json*"
+    ".claude/review-verdict.*"
     # Template infrastructure files (not for generated projects)
     "scripts/templatize.sh"
     ".github/workflows/publish-template.yml"
