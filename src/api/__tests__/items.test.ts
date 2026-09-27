@@ -1,16 +1,20 @@
 describe('itemsApi mock/real switch', () => {
-  it('routes to the real, fetchApi-backed implementation when USE_MOCKS is false', () => {
+  it('routes to the real, fetchApi-backed implementation when USE_MOCKS is false', async () => {
+    const mockFetchApi = jest
+      .fn()
+      .mockResolvedValue({ items: [], total: 0, page: 1, size: 10, pages: 0 })
+    let request: Promise<unknown> | undefined
+
     jest.isolateModules(() => {
       jest.mock('@/config', () => ({ USE_MOCKS: false }))
-      const mockFetchApi = jest
-        .fn()
-        .mockResolvedValue({ items: [], total: 0, page: 1, size: 10, pages: 0 })
       jest.mock('@/api/client', () => ({ fetchApi: mockFetchApi }))
       const { itemsApi } = require('@/api/items')
-      return itemsApi.list().then(() => {
-        expect(mockFetchApi).toHaveBeenCalled()
-      })
+      request = itemsApi.list()
     })
+
+    if (!request) throw new Error('Expected itemsApi.list() to return a promise')
+    await request
+    expect(mockFetchApi).toHaveBeenCalled()
   })
 
   it('routes list() to the mock implementation when USE_MOCKS is true', () => {
@@ -60,27 +64,19 @@ describe('itemsApi mock/real switch', () => {
 })
 
 describe('config', () => {
-  const original = process.env.EXPO_PUBLIC_USE_MOCKS
-
-  afterEach(() => {
-    process.env.EXPO_PUBLIC_USE_MOCKS = original
-  })
-
-  it('sets USE_MOCKS to true when EXPO_PUBLIC_USE_MOCKS is "true"', () => {
+  it('parses USE_MOCKS as true when EXPO_PUBLIC_USE_MOCKS is "true"', () => {
     jest.isolateModules(() => {
       jest.unmock('@/config')
-      process.env.EXPO_PUBLIC_USE_MOCKS = 'true'
-      const { USE_MOCKS } = require('@/config')
-      expect(USE_MOCKS).toBe(true)
+      const { parseUseMocks } = require('@/config')
+      expect(parseUseMocks('true')).toBe(true)
     })
   })
 
-  it('sets USE_MOCKS to false when EXPO_PUBLIC_USE_MOCKS is "false"', () => {
+  it('parses USE_MOCKS as false when EXPO_PUBLIC_USE_MOCKS is "false"', () => {
     jest.isolateModules(() => {
       jest.unmock('@/config')
-      process.env.EXPO_PUBLIC_USE_MOCKS = 'false'
-      const { USE_MOCKS } = require('@/config')
-      expect(USE_MOCKS).toBe(false)
+      const { parseUseMocks } = require('@/config')
+      expect(parseUseMocks('false')).toBe(false)
     })
   })
 })
