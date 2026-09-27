@@ -250,15 +250,16 @@ describe('Ory provider — login', () => {
     expect(result.current.error).toBeNull()
   })
 
-  it.each([undefined, { email: 'ada@example.com' }, { password: 'pw' }])(
-    'rejects without calling Ory when credentials are incomplete (%p)',
-    async (credentials) => {
-      const { provider } = await mountProvider()
+  it.each([
+    undefined,
+    { email: 'ada@example.com' },
+    { password: 'pw' },
+  ])('rejects without calling Ory when credentials are incomplete (%p)', async (credentials) => {
+    const { provider } = await mountProvider()
 
-      await expect(provider.login(credentials)).rejects.toThrow('Email and password are required')
-      expect(mockOry.createNativeLoginFlow).not.toHaveBeenCalled()
-    }
-  )
+    await expect(provider.login(credentials)).rejects.toThrow('Email and password are required')
+    expect(mockOry.createNativeLoginFlow).not.toHaveBeenCalled()
+  })
 
   it('rejects with a readable message and records the error when Ory refuses the credentials', async () => {
     mockOry.createNativeLoginFlow.mockResolvedValue({ id: 'flow-1' })
