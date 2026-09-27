@@ -2,7 +2,10 @@ import { render, screen } from '@testing-library/react-native'
 
 import Index from '../../app/index'
 
-jest.mock('@/auth', () => ({ useAuth: jest.fn() }))
+jest.mock('@/auth', () => ({
+  useAuth: jest.fn(),
+  AUTH_STATUS_UNCONFIGURED: 'unconfigured',
+}))
 jest.mock('expo-router', () => ({ Redirect: jest.fn(() => null) }))
 
 const { useAuth } = jest.requireMock('@/auth') as { useAuth: jest.Mock }
