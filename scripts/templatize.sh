@@ -113,6 +113,7 @@ fi
 # .env.example -> .env.example.jinja
 if [[ -f "${OUTPUT_DIR}/.env.example" ]]; then
     sed -i "s|EXPO_PUBLIC_API_URL=http://localhost:8000|EXPO_PUBLIC_API_URL=${SED_API_URL}|g" "${OUTPUT_DIR}/.env.example"
+    sed -i "s|EXPO_PUBLIC_USE_MOCKS=true|EXPO_PUBLIC_USE_MOCKS={{ 'true' if use_mocks else 'false' }}|g" "${OUTPUT_DIR}/.env.example"
     mv "${OUTPUT_DIR}/.env.example" "${OUTPUT_DIR}/.env.example.jinja"
     echo "  Templated: .env.example -> .env.example.jinja"
 fi

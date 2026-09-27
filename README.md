@@ -102,6 +102,8 @@ EXPO_PUBLIC_API_URL=http://localhost:8000
 EXPO_PUBLIC_USE_MOCKS=false
 ```
 
+`EXPO_PUBLIC_USE_MOCKS` defaults to `true`, which routes `itemsApi` (`src/api/items.ts`) to the in-memory `mockItemsApi` regardless of `EXPO_PUBLIC_API_URL`; set it to `false`, as shown above, to route through `fetchApi` to a real backend at `EXPO_PUBLIC_API_URL`.
+
 The `fetchApi` wrapper in `src/api/client.ts` handles:
 - Bearer token authentication via `expo-secure-store`
 - Base URL configuration
@@ -184,7 +186,7 @@ Template variables:
 - `project_slug` - Package name (hyphens)
 - `bundle_id` - App store identifier
 - `auth_enabled` / `auth_provider` - Authentication setup
-- `use_mocks` - Include mock data
+- `use_mocks` - Include mock data (sets `EXPO_PUBLIC_USE_MOCKS`, read by `src/config.ts` to switch `src/api/items.ts` between `mockItemsApi` and the real, `fetchApi`-backed implementation)
 
 ## Customization
 

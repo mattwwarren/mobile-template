@@ -1,5 +1,5 @@
-import { mockItemsApi } from '@/mocks/mock-api'
 import { USE_MOCKS } from '@/config'
+import { mockItemsApi } from '@/mocks/mock-api'
 import { fetchApi } from './client'
 import type { DashboardStats, Item, ItemCreate, ItemUpdate, PaginatedResponse } from './types'
 

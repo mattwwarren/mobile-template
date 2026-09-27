@@ -35,6 +35,8 @@ EXPO_PUBLIC_USE_MOCKS=true
 EXPO_PUBLIC_AUTH_PROVIDER=mock
 ```
 
+Leaving `EXPO_PUBLIC_USE_MOCKS=true` here is what lets steps 4-5 below run against the in-memory `mockItemsApi` with no backend running.
+
 ### 4. Generate Types (Optional)
 
 If you have a running FastAPI backend with an exported OpenAPI spec:

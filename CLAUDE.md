@@ -172,6 +172,8 @@ EXPO_PUBLIC_USE_MOCKS=true
 EXPO_PUBLIC_AUTH_PROVIDER=mock
 ```
 
+`EXPO_PUBLIC_USE_MOCKS` is read by `src/config.ts` and consumed in `src/api/items.ts`, which exports `mockItemsApi` when it's `true` and the real, `fetchApi`-backed implementation when it's `false`.
+
 ## Copier Template
 
 Template variables (defined in `copier.yaml`):

@@ -2,7 +2,9 @@ describe('itemsApi mock/real switch', () => {
   it('routes to the real, fetchApi-backed implementation when USE_MOCKS is false', () => {
     jest.isolateModules(() => {
       jest.mock('@/config', () => ({ USE_MOCKS: false }))
-      const mockFetchApi = jest.fn().mockResolvedValue({ items: [], total: 0, page: 1, size: 10, pages: 0 })
+      const mockFetchApi = jest
+        .fn()
+        .mockResolvedValue({ items: [], total: 0, page: 1, size: 10, pages: 0 })
       jest.mock('@/api/client', () => ({ fetchApi: mockFetchApi }))
       const { itemsApi } = require('@/api/items')
       return itemsApi.list().then(() => {

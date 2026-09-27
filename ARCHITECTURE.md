@@ -33,9 +33,9 @@ Copier variables: identity (`project_name`/`project_slug`), `bundle_id`,
 > (`src/auth/providers/index.ts`) — selecting one renders a full-screen
 > error at the `app/index.tsx` entry gate rather than silently falling back
 > to mock or throwing an uncaught exception. (2) `use_mocks` sets
-> `EXPO_PUBLIC_USE_MOCKS` in `.env`, but nothing in `src/`/`app/` reads that variable — mock-vs-real API is
-> not an env switch; mocks are applied at the API-client level in tests
-> (`jest.mock`).
+> `EXPO_PUBLIC_USE_MOCKS` in `.env`, and `src/config.ts` now reads it
+> directly: `src/api/items.ts` exports `mockItemsApi` when it's `true` (the
+> default) and the real, `fetchApi`-backed implementation when it's `false`.
 
 ## Routing and auth gating (`app/`)
 
