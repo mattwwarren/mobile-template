@@ -119,6 +119,13 @@ if [[ -f "${OUTPUT_DIR}/.env.example" ]]; then
     echo "  Templated: .env.example -> .env.example.jinja"
 fi
 
+# .claude/commands/ship-it.md -> ship-it.md.jinja (keeps generated projects' ship-it self-referential)
+if [[ -f "${OUTPUT_DIR}/.claude/commands/ship-it.md" ]]; then
+    sed -i "s/mobile-template/${SED_SLUG}/g" "${OUTPUT_DIR}/.claude/commands/ship-it.md"
+    mv "${OUTPUT_DIR}/.claude/commands/ship-it.md" "${OUTPUT_DIR}/.claude/commands/ship-it.md.jinja"
+    echo "  Templated: .claude/commands/ship-it.md -> .claude/commands/ship-it.md.jinja"
+fi
+
 # Step 3: Replace references in TSX files with placeholders
 echo -e "${GREEN}[3/6] Adding placeholders to TSX files...${NC}"
 
