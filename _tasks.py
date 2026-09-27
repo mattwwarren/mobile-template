@@ -171,8 +171,21 @@ def init_git() -> None:
             text=True,
         )
 
+        # Runners (and some fresh dev machines) have no global git identity
+        # configured, which makes `git commit` fail with exit status 128
+        # ("Please tell me who you are"). Scope an identity to this commit
+        # only, rather than requiring global config to already exist.
         subprocess.run(
-            [git_path, "commit", "-m", "Initial commit from mobile-template"],
+            [
+                git_path,
+                "-c",
+                "user.name=Mobile Template",
+                "-c",
+                "user.email=mobile-template@localhost",
+                "commit",
+                "-m",
+                "Initial commit from mobile-template",
+            ],
             check=True,
             capture_output=True,
             text=True,
