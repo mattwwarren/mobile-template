@@ -64,33 +64,19 @@ describe('itemsApi mock/real switch', () => {
 })
 
 describe('config', () => {
-  it('exports USE_MOCKS as true when EXPO_PUBLIC_USE_MOCKS is "true"', () => {
-    const originalValue = process.env.EXPO_PUBLIC_USE_MOCKS
-    try {
-      process.env.EXPO_PUBLIC_USE_MOCKS = 'true'
-      jest.isolateModules(() => {
-        jest.unmock('@/config')
-        const { USE_MOCKS } = require('@/config')
-        expect(USE_MOCKS).toBe(true)
-      })
-    } finally {
-      if (originalValue === undefined) delete process.env.EXPO_PUBLIC_USE_MOCKS
-      else process.env.EXPO_PUBLIC_USE_MOCKS = originalValue
-    }
+  it('parses EXPO_PUBLIC_USE_MOCKS="true" as enabled', () => {
+    jest.isolateModules(() => {
+      jest.unmock('@/config')
+      const { shouldUseMocks } = require('@/config')
+      expect(shouldUseMocks('true')).toBe(true)
+    })
   })
 
-  it('exports USE_MOCKS as false when EXPO_PUBLIC_USE_MOCKS is "false"', () => {
-    const originalValue = process.env.EXPO_PUBLIC_USE_MOCKS
-    try {
-      process.env.EXPO_PUBLIC_USE_MOCKS = 'false'
-      jest.isolateModules(() => {
-        jest.unmock('@/config')
-        const { USE_MOCKS } = require('@/config')
-        expect(USE_MOCKS).toBe(false)
-      })
-    } finally {
-      if (originalValue === undefined) delete process.env.EXPO_PUBLIC_USE_MOCKS
-      else process.env.EXPO_PUBLIC_USE_MOCKS = originalValue
-    }
+  it('parses EXPO_PUBLIC_USE_MOCKS="false" as disabled', () => {
+    jest.isolateModules(() => {
+      jest.unmock('@/config')
+      const { shouldUseMocks } = require('@/config')
+      expect(shouldUseMocks('false')).toBe(false)
+    })
   })
 })
