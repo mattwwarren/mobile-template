@@ -122,7 +122,12 @@ on push.
 
 > **Known gap:** `useTaskEvents` is implemented and tested but no screen
 > consumes it yet — it ships ahead of a tasks UI, to keep the three-way
-> contract (API / worker / clients) exercised.
+> contract (API / worker / clients) exercised. This is a confirmed decision
+> (contract-only), not an open question: building a real tasks screen is
+> blocked on `fastapi-template#62` (publishing `Task*Event` OpenAPI schemas),
+> which a future tasks resource needs so `npm run generate:types` can produce
+> real generated types instead of hand-rolled ones. Tracked by
+> `mobile-template#6`.
 
 ## Mocks and testing
 
