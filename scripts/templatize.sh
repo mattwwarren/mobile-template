@@ -107,6 +107,8 @@ if [[ -f "${OUTPUT_DIR}/app.json" ]]; then
     sed -i "s/\"Mobile Template\"/\"${SED_NAME}\"/g" "${OUTPUT_DIR}/app.json"
     sed -i "s/\"slug\": \"mobile-template\"/\"slug\": \"${SED_SLUG}\"/g" "${OUTPUT_DIR}/app.json"
     sed -i "s/\"scheme\": \"mobile-template\"/\"scheme\": \"${SED_SLUG}\"/g" "${OUTPUT_DIR}/app.json"
+    sed -i "s/\"bundleIdentifier\": \"com.example.mobiletemplate\"/\"bundleIdentifier\": \"${SED_BUNDLE_ID}\"/g" "${OUTPUT_DIR}/app.json"
+    sed -i "s/\"package\": \"com.example.mobiletemplate\"/\"package\": \"${SED_BUNDLE_ID}\"/g" "${OUTPUT_DIR}/app.json"
     mv "${OUTPUT_DIR}/app.json" "${OUTPUT_DIR}/app.json.jinja"
     echo "  Templated: app.json -> app.json.jinja"
 fi
@@ -116,6 +118,13 @@ if [[ -f "${OUTPUT_DIR}/.env.example" ]]; then
     sed -i "s|EXPO_PUBLIC_API_URL=http://localhost:8000|EXPO_PUBLIC_API_URL=${SED_API_URL}|g" "${OUTPUT_DIR}/.env.example"
     mv "${OUTPUT_DIR}/.env.example" "${OUTPUT_DIR}/.env.example.jinja"
     echo "  Templated: .env.example -> .env.example.jinja"
+fi
+
+# .claude/commands/ship-it.md -> ship-it.md.jinja (keeps generated projects' ship-it self-referential)
+if [[ -f "${OUTPUT_DIR}/.claude/commands/ship-it.md" ]]; then
+    sed -i "s/mobile-template/${SED_SLUG}/g" "${OUTPUT_DIR}/.claude/commands/ship-it.md"
+    mv "${OUTPUT_DIR}/.claude/commands/ship-it.md" "${OUTPUT_DIR}/.claude/commands/ship-it.md.jinja"
+    echo "  Templated: .claude/commands/ship-it.md -> .claude/commands/ship-it.md.jinja"
 fi
 
 # Step 3: Replace references in TSX files with placeholders
