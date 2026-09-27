@@ -43,7 +43,7 @@ describe('EAS / OTA update configuration', () => {
   describe('app.json expo-updates wiring', () => {
     it('registers the expo-updates config plugin', () => {
       expect(updatesPackage).toBe('expo-updates')
-      expect(appJson.expo.plugins).toContain('expo-updates')
+      expect(appJson.expo.plugins).toContain(updatesPackage)
     })
 
     it('uses the fingerprint runtime version policy', () => {
@@ -57,8 +57,8 @@ describe('EAS / OTA update configuration', () => {
     })
 
     it('keeps the source plugin and dependency on the same package', () => {
-      expect(appJson.expo.plugins).toContain('expo-updates')
-      expect(packageJson.dependencies['expo-updates']).toEqual(expect.any(String))
+      expect(appJson.expo.plugins).toContain(updatesPackage)
+      expect(packageJson.dependencies[updatesPackage]).toEqual(expect.any(String))
     })
   })
 })

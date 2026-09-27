@@ -69,7 +69,6 @@ EXCLUDE_PATTERNS=(
     ".claude/review-verdict.*"
     # Template infrastructure files (not for generated projects)
     "scripts/templatize.sh"
-    "scripts/eas-updates-package.js"
     ".github/workflows/publish-template.yml"
     ".github/workflows/validate-template.yml"
     # Policy test for the excluded validate-template.yml above: it asserts on
