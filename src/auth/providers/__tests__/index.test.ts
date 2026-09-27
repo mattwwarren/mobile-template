@@ -57,23 +57,24 @@ describe('createAuthProvider', () => {
     expect(result.current.error).toBeNull()
   })
 
-  it.each<AuthProviderType>(['auth0', 'keycloak', 'cognito'])(
-    'returns (does not throw) an unconfigured provider for "%s"',
-    (type) => {
-      let provider: AuthProviderImplementation | undefined
-      expect(() => {
-        provider = createAuthProvider(type)
-      }).not.toThrow()
-      if (!provider) throw new Error('provider was not created')
+  it.each<AuthProviderType>([
+    'auth0',
+    'keycloak',
+    'cognito',
+  ])('returns (does not throw) an unconfigured provider for "%s"', (type) => {
+    let provider: AuthProviderImplementation | undefined
+    expect(() => {
+      provider = createAuthProvider(type)
+    }).not.toThrow()
+    if (!provider) throw new Error('provider was not created')
 
-      expectProviderShape(provider)
-      const state = provider.useAuthState()
-      expect(state.status).toBe('unconfigured')
-      expect(state.error?.message).toContain(type)
-      expect(createMockProvider).not.toHaveBeenCalled()
-      expect(createOryProvider).not.toHaveBeenCalled()
-    }
-  )
+    expectProviderShape(provider)
+    const state = provider.useAuthState()
+    expect(state.status).toBe('unconfigured')
+    expect(state.error?.message).toContain(type)
+    expect(createMockProvider).not.toHaveBeenCalled()
+    expect(createOryProvider).not.toHaveBeenCalled()
+  })
 
   it('treats an unknown runtime value as unconfigured rather than falling back to mock', () => {
     const provider = createAuthProvider('firebase' as AuthProviderType)
