@@ -9,10 +9,10 @@ module.exports = {
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/*.d.ts', '!src/api/generated/**'],
   coverageThreshold: {
     global: {
-      statements: 51,
-      branches: 48,
-      functions: 44,
-      lines: 52,
+      statements: 70,
+      branches: 63,
+      functions: 63,
+      lines: 72,
     },
   },
 }

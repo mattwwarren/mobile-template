@@ -195,10 +195,9 @@ Template variables (defined in `copier.yaml`):
 - `npx tsc --noEmit` -- ZERO type errors
 - `npm test` -- 100% pass rate
 - `npm test -- --coverage` -- coverage must stay at or above the enforced
-  floor in `jest.config.js` (`coverageThreshold.global`: statements 51%,
-  branches 48%, functions 44%, lines 52% -- set from a measured baseline of
-  ~53.76%/50.42%/46.23%/54.92% via `floor(baseline) - 2`, no 60% floor
-  clamp per issue #9's operator resolution; raising real coverage to 60%
-  and re-tightening this gate is tracked in issue #16)
+  floor in `jest.config.js` (`coverageThreshold.global`: statements 70%,
+  branches 63%, functions 63%, lines 72% -- set from a measured baseline of
+  ~72.68%/65.08%/65.32%/74.19% via `floor(baseline) - 2`, superseding the
+  prior #9 floor)
 
 No suppressions without explicit user approval.
