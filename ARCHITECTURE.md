@@ -165,7 +165,8 @@ Each item below is the quick-reference form; §7 Principles and §8
 Anti-patterns give the fuller why and the trap each one guards against.
 
 1. Server state lives in TanStack Query; screens never fetch directly.
-2. Tokens live in SecureStore only, sent as Bearer headers; never
+2. Tokens live in SecureStore only; API-client tokens are sent as Bearer
+   headers, while the Ory provider uses `X-Session-Token`; never
    AsyncStorage, never a cookie assumption.
 3. All styling via `StyleSheet.create()` + theme tokens; no inline styles.
 4. Mocking happens at the API-client boundary (no MSW on RN); factories are
