@@ -35,6 +35,10 @@ npm run typecheck          # TypeScript check (tsc --noEmit)
 
 # Code Generation
 npm run generate:types     # Generate types from OpenAPI spec
+
+# Shipping (EAS)
+eas build --profile preview    # Build on the preview channel
+eas update --channel preview   # Publish an OTA update to preview builds
 ```
 
 ## Project Structure
@@ -183,6 +187,7 @@ Template variables (defined in `copier.yaml`):
 - `auth_enabled` - Enable auth UI and protected routes
 - `auth_provider` - ory/auth0/keycloak/cognito
 - `use_mocks` - Include mock data for standalone development
+- `enable_eas` - Enable EAS build profiles and OTA updates (default: true)
 
 ## Zero Violations Policy
 

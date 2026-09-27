@@ -25,7 +25,7 @@ generation on every push/PR to `main`.
 
 Copier variables: identity (`project_name`/`project_slug`), `bundle_id`,
 `api_url`, `auth_enabled` → `auth_provider`
-(none/mock/ory/auth0/keycloak/cognito), `use_mocks`.
+(none/mock/ory/auth0/keycloak/cognito), `use_mocks`, `enable_eas`.
 
 > **Known gaps:** (1) Only `mock` and `ory` are implemented.
 > `auth0`/`keycloak`/`cognito` are declared choices whose factory cases
