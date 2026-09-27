@@ -14,3 +14,7 @@ coverage/
 *.orig.*
 web-build/
 .env.local
+.claude/cw-context.json
+.claude/cw-context.json.lock
+.claude/review-verdict.json
+.claude/review-verdict.md
