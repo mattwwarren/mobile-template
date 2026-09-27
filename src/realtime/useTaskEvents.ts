@@ -58,8 +58,8 @@ interface UseTaskEventsReturn {
  * events and invalidating the `['tasks']` query key — ahead of any mobile
  * tasks UI, so the contract stays proven even while no screen consumes it.
  *
- * Tracked by mattwwarren/mobile-template#6. Building a real tasks screen is
- * blocked on mattwwarren/fastapi-template#62 (publishing `Task*Event` OpenAPI
+ * Tracked by issue #6 in this template's tracker. Building a real
+ * tasks screen is blocked on mattwwarren/fastapi-template#62 (publishing `Task*Event` OpenAPI
  * schemas): once that lands, `npm run generate:types` can produce real
  * generated types for a tasks resource to consume, rather than the
  * hand-rolled interfaces this file defines today.
