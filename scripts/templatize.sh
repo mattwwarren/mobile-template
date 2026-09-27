@@ -62,6 +62,7 @@ EXCLUDE_PATTERNS=(
     "coverage"
     ".DS_Store"
     "*.log"
+    ".claude/cw-context.json*"
     # Template infrastructure files (not for generated projects)
     "scripts/templatize.sh"
     ".github/workflows/publish-template.yml"
