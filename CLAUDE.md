@@ -73,6 +73,8 @@ src/
 
 ## Code Conventions
 
+- Source comments must not embed the literal repo slug (`mobile-template`) -- `scripts/templatize.sh`'s remaining-references guard greps generated output for it.
+
 ### Styles
 - **Always** use `StyleSheet.create()` for all styles -- no inline style objects
 - Import theme constants from `@/lib/theme` for colors, spacing, fontSize, borderRadius
