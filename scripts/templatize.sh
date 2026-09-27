@@ -58,6 +58,9 @@ EXCLUDE_PATTERNS=(
     "ios"
     "android"
     ".templatized"
+    # Excluded by design (ARCHITECTURE.md invariant 8): generated projects
+    # resolve dependencies fresh from the registry rather than carrying a
+    # frozen lockfile.
     "package-lock.json"
     "coverage"
     ".DS_Store"
