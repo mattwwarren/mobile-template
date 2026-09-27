@@ -129,17 +129,23 @@ import type { Item, ItemCreate, PaginatedResponse, DashboardStats } from '@/api/
 
 ### Pluggable Provider
 Auth uses a provider abstraction pattern:
-- **mock** - Auto-logged-in for development (the only implemented provider)
-- **ory** / **auth0** / **keycloak** / **cognito** - planned production
-  providers; currently unimplemented, selection falls back to mock (see
-  ARCHITECTURE.md Known gaps)
+- **mock** - Auto-logged-in for development
+- **ory** - Ory Kratos native (API) flow: email + password submitted to a
+  native login flow, session token stored in `expo-secure-store` and
+  validated via `toSession` on launch. Needs `EXPO_PUBLIC_ORY_SDK_URL`;
+  `@ory/client-fetch` is an optional dependency loaded via try/`require`
+- **auth0** / **keycloak** / **cognito** - planned; selecting one yields a
+  provider with `status: 'unconfigured'`, which renders a full-screen error
+  at the `app/index.tsx` entry gate — no silent fallback to mock, no throw
+  (see ARCHITECTURE.md Known gaps)
 
 ### Token Storage
 - Tokens stored via `expo-secure-store` (device keychain/keystore)
 - **Never** use `AsyncStorage` for tokens -- it is not encrypted
 
 ### Protected Routes
-Root `_layout.tsx` redirects unauthenticated users to `/(auth)/login`
+The `app/index.tsx` entry gate redirects unauthenticated users to `/(auth)/login`
+(it is the only auth guard — see ARCHITECTURE.md Invariant 6)
 
 ## Testing Patterns
 
@@ -181,5 +187,11 @@ Template variables (defined in `copier.yaml`):
 - `npx biome check .` -- ZERO violations
 - `npx tsc --noEmit` -- ZERO type errors
 - `npm test` -- 100% pass rate
+- `npm test -- --coverage` -- coverage must stay at or above the enforced
+  floor in `jest.config.js` (`coverageThreshold.global`: statements 51%,
+  branches 48%, functions 44%, lines 52% -- set from a measured baseline of
+  ~53.76%/50.42%/46.23%/54.92% via `floor(baseline) - 2`, no 60% floor
+  clamp per issue #9's operator resolution; raising real coverage to 60%
+  and re-tightening this gate is tracked in issue #16)
 
 No suppressions without explicit user approval.
