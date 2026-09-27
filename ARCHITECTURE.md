@@ -232,18 +232,17 @@ Anti-patterns give the fuller why and the trap each one guards against.
 
 ## 8. Anti-patterns
 
-1. **Don't hand-edit anything under a generated/managed path** (`src/api/
-   generated/types.ts`, `package-lock.json`). The former is marked
-   `# AUTO-GENERATED from OpenAPI (don't edit)` in `CLAUDE.md`'s project
-   structure; both get overwritten by their own regeneration command. An
-   edit made by hand disappears on the next `npm run generate:types` or
-   `npm install`/`expo install --fix` run and masks real spec/dependency
-   drift instead of surfacing it.
-2. **Don't fetch directly from a screen or bypass the hooks layer** (`src/
-   hooks/`). Bypassing it breaks the coordinated cache invalidation that
-   lives there (e.g. item mutations also invalidating dashboard-stats keys)
-   and reintroduces the duplicate-fetch/stale-cache bugs Invariant 1 exists
-   to prevent.
+1. **Don't hand-edit anything under a generated/managed path** — `src/api/generated/types.ts` or `package-lock.json`.
+   The former is marked `# AUTO-GENERATED from OpenAPI (don't edit)` in
+   `CLAUDE.md`'s project structure; both get overwritten by their own
+   regeneration command. An edit made by hand disappears on the next
+   `npm run generate:types` or `npm install`/`expo install --fix` run and
+   masks real spec/dependency drift instead of surfacing it.
+2. **Don't fetch directly from a screen or bypass the hooks layer** — `src/hooks/`.
+   Bypassing it breaks the coordinated cache invalidation that lives there
+   (e.g. item mutations also invalidating dashboard-stats keys) and
+   reintroduces the duplicate-fetch/stale-cache bugs Invariant 1 exists to
+   prevent.
 3. **Don't store tokens in `AsyncStorage` or assume a cookie jar.** Native
    RN has no cookie jar and `AsyncStorage` is unencrypted; `src/api/client.ts`
    and `src/auth/` rely exclusively on `expo-secure-store` + a Bearer header
