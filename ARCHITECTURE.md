@@ -187,3 +187,7 @@ is disabled in this repo; CI green is the bar (see
    drift surfaces between PRs too. `tests/policy/dependency-pinning.test.ts`
    and `tests/policy/validate-template-workflow.test.ts` enforce both
    halves of this policy.
+
+   Verification (2026-09-27): a fresh generated project with an intentional
+   installed `expo-font@56.0.0` mismatch reported `Found outdated dependencies`
+   and `npx expo install --check` exited with status 1.
