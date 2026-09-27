@@ -1,5 +1,6 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.5.14/schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
@@ -49,7 +50,9 @@
       "!**/coverage",
       "!**/src/api/generated",
       "!**/ios",
-      "!**/android"
+      "!**/android",
+      "!**/.claude/cw-context.json*",
+      "!**/.claude/review-verdict.*"
     ]
   }
 }
