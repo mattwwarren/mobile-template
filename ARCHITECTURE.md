@@ -245,9 +245,10 @@ Anti-patterns give the fuller why and the trap each one guards against.
    prevent.
 3. **Don't store tokens in `AsyncStorage` or assume a cookie jar.** Native
    RN has no cookie jar and `AsyncStorage` is unencrypted; `src/api/client.ts`
-   and `src/auth/` rely exclusively on `expo-secure-store` + a Bearer header
-   (Invariant 2). Reaching for `AsyncStorage` "just for now" persists an
-   insecure, unencrypted token store.
+   relies on `expo-secure-store` + a Bearer header, while the Ory provider is
+   the exception and sends its SecureStore token as `X-Session-Token` (see
+   `src/auth/providers/ory.ts`; Invariant 2). Reaching for `AsyncStorage`
+   "just for now" persists an insecure, unencrypted token store.
 4. **Don't add a per-screen or per-group auth guard.** `(tabs)/_layout.tsx`
    deliberately does not re-check auth; the single guard lives in
    `app/index.tsx`'s entry redirect (Invariant 6). A second guard added at a
