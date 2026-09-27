@@ -49,6 +49,21 @@ interface UseTaskEventsReturn {
   isConnected: boolean
 }
 
+/**
+ * Contract-only hook: intentionally has no consuming screen yet.
+ *
+ * This is deliberate, not dead code. It exercises the shared three-way
+ * realtime contract (API / worker / clients) — subscribing to the backend's
+ * `task_status_changed` / `task_progress` / `task_completed` / `task_failed`
+ * events and invalidating the `['tasks']` query key — ahead of any mobile
+ * tasks UI, so the contract stays proven even while no screen consumes it.
+ *
+ * Tracked by mattwwarren/mobile-template#6. Building a real tasks screen is
+ * blocked on mattwwarren/fastapi-template#62 (publishing `Task*Event` OpenAPI
+ * schemas): once that lands, `npm run generate:types` can produce real
+ * generated types for a tasks resource to consume, rather than the
+ * hand-rolled interfaces this file defines today.
+ */
 export function useTaskEvents(options: UseTaskEventsOptions = {}): UseTaskEventsReturn {
   const socket = useSocket()
   const queryClient = useQueryClient()
