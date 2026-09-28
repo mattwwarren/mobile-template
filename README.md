@@ -184,7 +184,37 @@ Template variables:
 - `project_slug` - Package name (hyphens)
 - `bundle_id` - App store identifier
 - `auth_enabled` / `auth_provider` - Authentication setup
+- `enable_eas` - Enable EAS build profiles and OTA updates (default: on)
 - `use_mocks` - Include mock data
+
+## Shipping & OTA Updates
+
+> This section applies only when the project was generated with `enable_eas=true` (the default).
+> With `enable_eas=false`, there is no `eas.json`, no `expo-updates` dependency or plugin, and no `runtimeVersion`.
+
+Builds and over-the-air (OTA) updates go through [EAS](https://docs.expo.dev/eas/). `eas.json` defines
+three build profiles. Each profile is tied to an update channel of the same name:
+
+- `development` - standard internal-distribution build for development, channel `development`
+- `preview` - internal-distribution build for testers, channel `preview`
+- `production` - store build, channel `production`
+
+A build only receives updates published to its own channel:
+
+```bash
+eas build --profile preview        # Build a preview binary on the preview channel
+eas update --channel preview       # Publish a JS-only OTA update to preview builds
+```
+
+`app.json` sets `runtimeVersion` to `{ "policy": "fingerprint" }`. EAS computes the runtime
+version from a fingerprint of the project's native layer, and an OTA update is delivered only to builds
+with the same fingerprint. Changing native code, such as adding a native module or config plugin or
+bumping the Expo SDK, changes the fingerprint. After a change like that, make a new build with
+`eas build`; `eas update` alone cannot ship it.
+
+One-time setup: run `eas init` to link the project to your Expo account, which writes the EAS project
+ID into the app config. Then run `eas update:configure` to set `updates.url`. The template does not do
+this for you because it has no EAS credentials.
 
 ## Customization
 

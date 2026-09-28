@@ -58,3 +58,7 @@ Scan the QR code with Expo Go, or press `i` (iOS) / `a` (Android) to open in a s
 - **Customize theme:** Edit `src/lib/theme.ts`
 - **Run tests:** `npm test`
 - **Lint:** `npm run lint`
+- **Ship a build:** `eas build --profile preview`
+- **Push an OTA update:** `eas update --channel preview`
+
+See README's "Shipping & OTA Updates" section for the profile and channel details and the one-time `eas init` setup.

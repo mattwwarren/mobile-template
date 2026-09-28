@@ -25,6 +25,8 @@ _exclude:
   # frozen lockfile.
   - "package-lock.json"
   - ".github/workflows/publish-template.yml"
+  - "{% if not enable_eas %}eas.json{% endif %}"
+  - "{% if not enable_eas %}tests/integration/eas-config.test.ts{% endif %}"
 
 project_name:
   type: str
@@ -80,6 +82,11 @@ use_mocks:
   help: "Include mock data for standalone development?"
   default: true
 
+enable_eas:
+  type: bool
+  help: "Enable EAS build profiles and OTA updates? (Adds eas.json, expo-updates dependency/plugin, and updates/runtimeVersion config)"
+  default: true
+
 _tasks:
   - "python3 _tasks.py"
 
@@ -97,6 +104,7 @@ _message_after: |
   Configuration Summary:
     - Bundle ID: {{ bundle_id }}
     - Authentication: {{ 'Enabled (' + auth_provider + ')' if auth_enabled else 'Disabled' }}
+    - EAS/OTA Updates: {{ 'Enabled' if enable_eas else 'Disabled' }}
     - Mock Data: {{ 'Enabled' if use_mocks else 'Disabled' }}
     - API URL: {{ api_url }}
 
