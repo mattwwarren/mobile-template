@@ -14,6 +14,7 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    name: validate (${{ matrix.config.name }})
     strategy:
       matrix:
         config:
